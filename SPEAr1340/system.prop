@@ -1,0 +1,7 @@
+# This is a high density device with more memory, so larger vm heaps for it.
+
+ro.sf.lcd_density=160
+ro.secure=0
+
+wifi.interface=wlan0
+

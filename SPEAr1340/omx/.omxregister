@@ -1,0 +1,4 @@
+/system/lib/libhantroimagedec.so
+ ==> OMX.hantro.G1.image.decoder ==> OMX.hantro.G1.image.decoder.jpeg: ==> /data/omx/.omxregister
+/system/lib/libhantrovideodec.so
+ ==> OMX.hantro.G1.video.decoder ==> OMX.hantro.G1.video.decoder.mpeg4:OMX.hantro.G1.video.decoder.avc:OMX.hantro.G1.video.decoder.h263:OMX.hantro.G1.video.decoder.vp8: ==> /data/omx/.omxregister

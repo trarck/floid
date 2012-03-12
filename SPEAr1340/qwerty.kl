@@ -1,0 +1,6 @@
+# On an AT keyboard: ESC, F10
+key 1     MENU		WAKE_DROPPED
+key 10    POWER		WAKE
+key 2     BACK		WAKE_DROPPED
+key 12    HOME		WAKE
+key 116   POWER 	WAKE
