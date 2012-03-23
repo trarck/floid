@@ -231,7 +231,10 @@ on post-fs
     chmod 0770 /data/lost+found
     chown root root /cache/lost+found
     chmod 0770 /cache/lost+found
-
+    
+    chown system system /sys/class/backlight/backlight/brightness
+    chmod 0770 /sys/class/backlight/backlight/brightness
+    
     start flat_mem
     #############################
     # Load needed kernel modules
