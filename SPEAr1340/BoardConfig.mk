@@ -4,8 +4,12 @@ TARGET_PREBUILT_KERNEL := true
 
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
+TARGET_CPU_SMP := true
 TARGET_ARCH_VARIANT := armv7-a
 ARCH_ARM_HAVE_TLS_REGISTER := true
+
+# Use a smaller subset of system fonts to keep image size lower
+SMALLER_FONT_FOOTPRINT := true
 
 TARGET_PROVIDES_INIT_RC := true
 TARGET_NO_RADIOIMAGE := true
@@ -19,22 +23,18 @@ TARGET_KEYBOARD := SPEAR1300EVB
 ## GPU and video configration parameters
 
 TARGET_BOARD_PLATFORM_GPU := ARM-Mali
-#BOARD_NO_32BPP := true
-DEFAULT_FB_NUM := 2
+DEFAULT_FB_NUM := 1
 TARGET_HARDWARE_3D := true
-BOARD_EGL_CFG := device/stm/SPEAr1340/spear/egl.cfg
+USE_OPENGL_RENDERER := true
+BOARD_EGL_CFG := device/stm/SPEAr1340/hardware/arm/prebuilt/egl.cfg
 PRODUCT_MANUFACTURER := ST
 TARGET_RGB888 := true
 
 TARGET_DISPLAY := 10inch
 ## TARGET_DISPLAY := 7inch
-TARGET_RESISTIVE_TS := false
+TARGET_RESISTIVE_TS := true
 
-## Audio configuration parameters
-
-BOARD_USES_ALSA_AUDIO := true
-BUILD_WITH_ALSA_UTILS := true
-USE_CAMERA_STUB := true
+USE_CAMERA_STUB := false
 TARGET_RELEASETOOLS_EXTENSIONS := device/stm/SPEAr1340
 BOARD_HAVE_BLUETOOTH := true
 
@@ -54,6 +54,5 @@ endif
 BOARD_USES_OVERLAY := true
 BOARD_USES_VERISILICON := true
 
-#Ram must be 1GB or 256MB
 TARGET_BOARD_RAM := 1GB
 

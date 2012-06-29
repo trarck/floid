@@ -1889,7 +1889,7 @@ _func_enter_;
 
 	pdrvextra_cmd_parm->ec_id = POWER_SAVING_CTRL_WK_CID;	
 	pdrvextra_cmd_parm->pbuf = NULL;
-	printk("==> %s  , enqueue CMD \n",__FUNCTION__);	
+	// printk("==> %s  , enqueue CMD \n",__FUNCTION__);	
 	init_h2fwcmd_w_parm_no_rsp(ppscmd, pdrvextra_cmd_parm, GEN_CMD_CODE(_Set_Drv_Extra));
 
 	enqueue_cmd_ex(pcmdpriv, ppscmd);

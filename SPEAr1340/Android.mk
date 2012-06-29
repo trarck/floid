@@ -12,24 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-LOCAL_PATH := $(call my-dir)
+LOCAL_PATH := $(my-dir)
 
-ifeq ($(TARGET_KEYBOARD),SPEAr1340)
-	include $(CLEAR_VARS)
-	LOCAL_SRC_FILES := touchkey.kcm
-	LOCAL_MODULE_TAGS := optional
-	include $(BUILD_KEY_CHAR_MAP)
-
-	include $(CLEAR_VARS)
-
-	file := $(TARGET_OUT_KEYLAYOUT)/querty.kl
-	 
-	ALL_PREBUILT += $(file)
-	 
-	$(file): $(LOCAL_PATH)/querty.kl | $(ACP)
-		$(transform-prebuilt-to-target)
-endif
-
-ifneq ($(TARGET_SIMULATOR),true)
 include $(call all-makefiles-under,$(LOCAL_PATH))
-endif

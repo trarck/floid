@@ -133,7 +133,7 @@ void rtw_ps_processor(_adapter*padapter)
 			if(pwrpriv->current_rfpwrstate == rf_on)
 			{
 				rfpwrstate = RfOnOffDetect(padapter);
-				printk("@@@@- #1  %s==> rfstate:%s \n",__FUNCTION__,(rfpwrstate==rf_on)?"rf_on":"rf_off");
+				// printk("@@@@- #1  %s==> rfstate:%s \n",__FUNCTION__,(rfpwrstate==rf_on)?"rf_on":"rf_off");
 				if(rfpwrstate!= pwrpriv->current_rfpwrstate)
 				{
 					if(rfpwrstate == rf_off)
@@ -152,7 +152,7 @@ void rtw_ps_processor(_adapter*padapter)
 	#endif
 		{
 			rfpwrstate = RfOnOffDetect(padapter);
-			printk("@@@@- #2  %s==> rfstate:%s \n",__FUNCTION__,(rfpwrstate==rf_on)?"rf_on":"rf_off");
+			// printk("@@@@- #2  %s==> rfstate:%s \n",__FUNCTION__,(rfpwrstate==rf_on)?"rf_on":"rf_off");
 
 			if(rfpwrstate!= pwrpriv->current_rfpwrstate)
 			{

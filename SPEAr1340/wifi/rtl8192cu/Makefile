@@ -238,10 +238,8 @@ endif
 ifeq ($(CONFIG_PLATFORM_ANDROID_ARM), y)
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN -DCONFIG_PLATFORM_ANDROID
 ARCH := arm
-#CROSS_COMPILE := /home/barba/source_code/Android/master/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-
-CROSS_COMPILE := /dos/git/SPEAr1340/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-
-#KSRC := /home/barba/source_code/git_base/kernel/spear1340/frascino
-KSRC := /dos/git/SPEAr1340/kernel
+CROSS_COMPILE := $(ANDROID_BUILD_TOP)/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
+KSRC := $(ANDROID_BUILD_TOP)/kernel
 endif
 
 ifeq ($(CONFIG_PLATFORM_ARM_PXA2XX), y)

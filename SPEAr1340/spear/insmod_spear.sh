@@ -1,30 +1,43 @@
-#!/system/xbin/sh
+#!/system/bin/sh
 
 cd /system/xbin
 ./busybox --install -s /system/xbin
 
-/xbin/sh
-
 ##For 1GB boards
-/system/xbin/busybox insmod /system/lib/modules/ump.ko ump_debug_level=2 ump_memory_address=0x3C000000 ump_memory_size=0x03000000
-/system/xbin/busybox insmod /system/lib/modules/mali.ko mali_debug_level=2 mali_memory_address=0x3F000000 mali_memory_size=0x01000000 mem_validation_base=0x00000000 mem_validation_size=0x40000000 
+/system/xbin/busybox insmod /system/lib/modules/ump.ko ump_debug_level=0 ump_memory_address=0x3C000000 ump_memory_size=0x04000000
+/system/xbin/busybox insmod /system/lib/modules/mali.ko mali_debug_level=0
 
-sleep 3
+mali_major=`cat /proc/devices | grep mali | cut -c1-3`
+ump_major=`cat /proc/devices | grep ump | cut -c1-3`
+mknod /dev/mali c $mali_major 0
+mknod /dev/ump c $ump_major 0
 
-chown system:graphics /dev/ump
-chmod 666 /dev/ump
-chown system:graphics /dev/mali
-chmod 666 /dev/mali
-
-insmod /system/lib/modules/mmapper.ko
-wait /dev/mmapper 10
-chown system:graphics /dev/mmapper
-chmod 666 /dev/mmapper
+chown 1000:1003 /dev/ump
+chown 1000:1003 /dev/mali
+chmod 0666 /dev/ump
+chmod 0666 /dev/mali
 
 ln -s /dev/mali /dev/gpu0
 
-sqlite3 /data/data/com.android.providers.settings/databases/settings.db "UPDATE system SET value = '-1' WHERE name = 'def_screen_off_timeout'"
-sqlite3 /data/data/com.android.providers.settings/databases/settings.db "SELECT * FROM system"
+mkdir -p /tmp/dev
+rm -rf /tmp/dev/*
 
-sh /system/spear/memalloc_load.sh
-sh /system/spear/driver_load.sh
+/system/xbin/busybox insmod /system/lib/modules/hx170dec.ko
+/system/xbin/busybox insmod /system/lib/modules/hx280enc.ko
+/system/xbin/busybox insmod /system/lib/modules/memalloc.ko memalloc_memory_address=0x36600000 alloc_method=12
+/system/xbin/busybox insmod /system/lib/modules/mmapper.ko
+
+hx170_major=`cat /proc/devices | grep hx170 | cut -c1-3`
+hx280_major=`cat /proc/devices | grep hx280 | cut -c1-3`
+memalloc_major=`cat /proc/devices | grep memalloc | cut -c1-3`
+mmapper_major=`cat /proc/devices | grep mmapper | cut -c1-3`
+
+mknod /tmp/dev/hx170 c $hx170_major 0
+mknod /tmp/dev/hx280 c $hx280_major 0
+mknod /tmp/dev/memalloc c $memalloc_major 0
+mknod /dev/mmapper c $mmapper_major 1
+
+chmod 0666 /tmp/dev/hx170
+chmod 0666 /tmp/dev/hx280
+chmod 0666 /tmp/dev/memalloc
+chmod 0666 /dev/mmapper

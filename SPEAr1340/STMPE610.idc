@@ -13,14 +13,11 @@
 # limitations under the License.
 
 #
-# Input Device Calibration File for the Passion touch screen.
-#
-# These calibration values are derived from empirical measurements
-# and may not be appropriate for use with other touch screens.
-# Refer to the input device calibration documentation for more details.
+# Input Device Calibration File for the STMPE touch screen.
 #
 
+# Basic Parameters
+touch.deviceType = touchScreen
+touch.size.calibration = resistive
+touch.pressure.calibration = physical
 
-touch.touchSize.calibration = pressure
-
-touch.toolSize.calibration = resistive

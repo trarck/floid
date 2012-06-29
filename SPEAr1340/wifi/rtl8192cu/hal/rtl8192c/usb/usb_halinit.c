@@ -2040,7 +2040,7 @@ rt_rf_power_state RfOnOffDetect(IN	PADAPTER pAdapter )
 	{
 		write8(	pAdapter, REG_MAC_PINMUX_CFG,read8(pAdapter, REG_MAC_PINMUX_CFG)&~(BIT3));
 		val8 = read8(pAdapter, REG_GPIO_IO_SEL);
-		printk("GPIO_IN=%02x\n", val8);
+		// printk("GPIO_IN=%02x\n", val8);
 		rfpowerstate = (val8 & BIT3) ? rf_on : rf_off;	
 	}
 	return rfpowerstate;
