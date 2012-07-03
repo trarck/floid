@@ -1,5 +1,5 @@
 echo "Set Android Bootargs"
-setenv bootargs 'console=ttyAMA0,115200 androidboot.console=ttyAMA0 android.checkjni=0 mem=700M root=/dev/sda3 init=/init pb=hdmi_tx panel=1080p'
+setenv bootargs 'console=ttyAMA0,115200 androidboot.console=ttyAMA0 android.checkjni=0 mem=870M root=/dev/sda3 init=/init pb=hdmi_tx'
 fatload usb 0:2  0x02000 uimage_android
 
 echo "Stop USB"
