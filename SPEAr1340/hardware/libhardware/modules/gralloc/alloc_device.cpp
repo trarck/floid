@@ -13,7 +13,7 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 
 #include <string.h>
@@ -32,6 +32,8 @@
 
 #include <ump/ump.h>
 #include <ump/ump_ref_drv.h>
+
+#define GRALLOC_ALIGN( value, base ) (((value) + ((base) - 1)) & ~((base) - 1))
 
 #if GRALLOC_SIMULATE_FAILURES
 #include <cutils/properties.h>
@@ -230,9 +232,10 @@ static int alloc_device_alloc(alloc_device_t* dev, int w, int h, int format, int
 		{
 			case HAL_PIXEL_FORMAT_YCrCb_420_SP:
 			case HAL_PIXEL_FORMAT_YV12:
-			case HAL_PIXEL_FORMAT_NV12:
-				stride = (w + 15) & ~15;
-				size = h * (stride + stride/2);
+            case HAL_PIXEL_FORMAT_NV12:
+				stride = GRALLOC_ALIGN(w, 16);
+				size = h * (stride + GRALLOC_ALIGN(stride/2,16));
+
 				break;
 			default:
 				return -EINVAL;

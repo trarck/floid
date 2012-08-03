@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010, 2012 ARM Limited. All rights reserved.
+ * Copyright (C) 2010 ARM Limited. All rights reserved.
  * 
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
@@ -25,12 +25,12 @@ MODULE_PARM_DESC(ump_backend, "0 = dedicated memory backend (default), 1 = OS me
 
 /* The base address of the memory block for the dedicated memory backend */
 unsigned int ump_memory_address = ARCH_UMP_MEMORY_ADDRESS_DEFAULT;
-module_param(ump_memory_address, uint, S_IRUSR | S_IWUSR | S_IWGRP | S_IRGRP | S_IROTH); /* rw-rw-r-- */
+module_param(ump_memory_address, uint, S_IRUGO); /* r--r--r-- */
 MODULE_PARM_DESC(ump_memory_address, "The physical address to map for the dedicated memory backend");
 
 /* The size of the memory block for the dedicated memory backend */
 unsigned int ump_memory_size = ARCH_UMP_MEMORY_SIZE_DEFAULT;
-module_param(ump_memory_size, uint, S_IRUSR | S_IWUSR | S_IWGRP | S_IRGRP | S_IROTH); /* rw-rw-r-- */
+module_param(ump_memory_size, uint, S_IRUGO); /* r--r--r-- */
 MODULE_PARM_DESC(ump_memory_size, "The size of fixed memory to map in the dedicated memory backend");
 
 ump_memory_backend* ump_memory_backend_create ( void )

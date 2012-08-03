@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# vInstaller an Android upgrade tool.
+# Copyright (C) 2012 Vincenzo Frascino <vincenzo.frascino@st.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see .
+#
+
+# this mkimage is from U-Boot, if you are not on (or compatible with) x86 linux, bring your own
+./mkimage -A arm -O linux -T script -C none -a 1 -e 0 -n "vInstaller script image" -d cmd scriptcmd
+./mkimage -A arm -O linux -T script -C none -a 1 -e 0 -n "vInstaller-x script image" -d cmd-x upgrade-x.img
+./mkimage -A arm -O linux -T script -C none -a 1 -e 0 -n "vInstaller-k script image" -d cmd-k upgrade-k.img
+mv scriptcmd upgrade.img
+

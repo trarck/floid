@@ -1,0 +1,9 @@
+#
+# system.prop for full_SPEAr1340_10inch
+#
+ro.sf.lcd_density=160
+
+#
+#system prop for opengles version
+#
+ro.opengles.version=131072

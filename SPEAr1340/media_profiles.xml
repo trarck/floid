@@ -77,21 +77,22 @@
 <MediaSettings>
     <!-- Each camcorder profile defines a set of predefined configuration parameters -->
     <CamcorderProfiles cameraId="0">
-        <EncoderProfile quality="1080p" fileFormat="mp4" duration="30">
+        <EncoderProfile quality="cif" fileFormat="mp4" duration="30">
             <Video codec="h264"
-                   bitRate="12000000"
-                   width="1600"
-                   height="1200"
-                   frameRate="15" />
-            <Audio codec="aac"
-                   bitRate="96000"
-                   sampleRate="48000"
+                   bitRate="768000"
+                   width="352"
+                   height="288"
+                   frameRate="30" />
+
+            <Audio codec="amrnb"
+                   bitRate="12200"
+                   sampleRate="8000"
                    channels="1" />
         </EncoderProfile>
 
-        <EncoderProfile quality="high" fileFormat="mp4" duration="60">
+        <EncoderProfile quality="480p" fileFormat="mp4" duration="60">
             <Video codec="h264"
-                   bitRate="5000000"
+                   bitRate="2000000"
                    width="640"
                    height="480"
                    frameRate="30" />
@@ -101,10 +102,10 @@
                    sampleRate="48000"
                    channels="1" />
         </EncoderProfile>
-	
-	<EncoderProfile quality="low" fileFormat="mp4" duration="30">
+
+        <EncoderProfile quality="timelapsecif" fileFormat="mp4" duration="30">
             <Video codec="h264"
-                   bitRate="1200000"
+                   bitRate="768000"
                    width="352"
                    height="288"
                    frameRate="30" />
@@ -112,6 +113,19 @@
             <Audio codec="amrnb"
                    bitRate="12200"
                    sampleRate="8000"
+                   channels="1" />
+        </EncoderProfile>
+
+        <EncoderProfile quality="timelapse480p" fileFormat="mp4" duration="60">
+            <Video codec="h264"
+                   bitRate="2000000"
+                   width="640"
+                   height="480"
+                   frameRate="30" />
+
+            <Audio codec="aac"
+                   bitRate="96000"
+                   sampleRate="48000"
                    channels="1" />
         </EncoderProfile>
 
@@ -132,14 +146,20 @@
     -->
     <VideoEncoderCap name="h264" enabled="true"
         minBitRate="64000" maxBitRate="12000000"
-        minFrameWidth="352" maxFrameWidth="1600"
-        minFrameHeight="288" maxFrameHeight="1200"
+        minFrameWidth="176" maxFrameWidth="1600"
+        minFrameHeight="144" maxFrameHeight="1200"
         minFrameRate="15" maxFrameRate="30" />
 
     <VideoEncoderCap name="h263" enabled="true"
         minBitRate="64000" maxBitRate="1000000"
-        minFrameWidth="352" maxFrameWidth="800"
-        minFrameHeight="288" maxFrameHeight="600"
+        minFrameWidth="176" maxFrameWidth="800"
+        minFrameHeight="144" maxFrameHeight="600"
+        minFrameRate="15" maxFrameRate="30" />
+
+    <VideoEncoderCap name="m4v" enabled="true"
+        minBitRate="64000" maxBitRate="1000000"
+        minFrameWidth="176" maxFrameWidth="800"
+        minFrameHeight="144" maxFrameHeight="600"
         minFrameRate="15" maxFrameRate="30" />
 
     <AudioEncoderCap name="aac" enabled="true"
@@ -164,7 +184,6 @@
         for TEST applications. For other applications, we do
         not perform any checks at all.
     -->
-    <VideoDecoderCap name="m4v" enabled="false"/>
     <VideoDecoderCap name="wmv" enabled="false"/>
     <AudioDecoderCap name="wma" enabled="false"/>
 </MediaSettings>

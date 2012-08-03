@@ -1,0 +1,58 @@
+SYStem.RESet
+SYStem.CPU CortexA9MPCore
+SYStem.JtagClock 10Mhz
+SYStem.Option EnReset OFF
+;SYStem.CONFIG CoreNumber 2.    ; Define, how many cores are available in that debug session
+SYStem.CONFIG MEMORYACCESSPORT 0.
+SYStem.CONFIG DEBUGACCESSPORT  1.
+
+;                                    ; core 0   core 1
+;SYStem.CONFIG COREBASE              0x80018000 0x8001A000
+SYStem.CONFIG COREBASE         0x80030000 0x80032000
+
+SYStem.CONFIG CTIBASE          0x80038000 0x80039000
+SYStem.CONFIG ETMBASE          0x8003C000 0x8003D000
+SYStem.CONFIG ETBBASE          0x80003000
+SYStem.CONFIG TPIUBASE         0x80001000
+SYStem.CONFIG CTICONFIG        CORTEXV1
+
+System.config ETMFUNNELPORT     1.	0.
+;system.config etmetbfunnelport 0.         0.
+SYStem.CONFIG FUNNELBASE       0x80004000
+system.config ETBFUNNELBASE    0x80006000 ; (AV)
+   
+;SYStem.Option L2CacheBase      <address>
+SYStem.Up
+
+
+; enable DDR
+D.LOAD "..\..\xloader\xloader.img" 0xb3801504 /skip 0x40
+R.S PC 0xb3801504
+go
+wait 3s
+break
+
+; load u-boot
+D.LOAD "..\..\u-boot\u-boot.img" 0x0
+R.S PC 0x40
+go
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -22,17 +22,16 @@ export CONFIG=SPEAr1340
 export INSTRUMENTED=FALSE
 export USING_MRI=FALSE
 export USING_SMP=1
-export EXTRA_DEFINES=-DLCAD_KERNEL
 export TARGET_PLATFORM=default
 TARGET_DIR=`pwd`/../prebuilt
 
+rm devicedrv/ump/arch
 make -C devicedrv/ump/ clean
 make -C devicedrv/ump/
 
+rm devicedrv/mali/arch
 make -C devicedrv/mali clean
 make -C devicedrv/mali
 
-echo "Copy compiled driver into: $TARGET_DIR"
 cp devicedrv/mali/mali.ko $TARGET_DIR
 cp devicedrv/ump/ump.ko $TARGET_DIR
-

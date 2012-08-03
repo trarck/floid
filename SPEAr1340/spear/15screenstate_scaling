@@ -1,0 +1,84 @@
+#!/system/bin/sh
+#
+# screenstate_scaling - switch CPU frequency governor on screen state change
+# Copyright (C) 2012 Vincenzo Frascino <vincenzo.frascino@st.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see .
+#
+
+AWAKE_GOVERNOR100="conservative"
+AWAKE_GOVERNOR_FREQENCY_MAX100="600000"
+AWAKE_GOVERNOR_FREQENCY_MIN100="165000"
+
+AWAKE_GOVERNOR50="powersave"
+AWAKE_GOVERNOR_FREQENCY_MAX50="500000"
+AWAKE_GOVERNOR_FREQENCY_MIN50="166000"
+
+SLEEP_GOVERNOR="powersave"
+SLEEP_GOVERNOR_FREQENCY_MAX="250000"
+SLEEP_GOVERNOR_FREQENCY_MIN="165000"
+
+
+# Disable hw.nopm after boot
+setprop hw.nopm false
+echo -n "1" > /sys/power/wake_unlock
+
+(while [ 1 ]
+do
+# Read AWAKE status
+    AWAKE=`cat /sys/power/wait_for_fb_wake`
+# Read CPU Temp in centigrade degree
+    THERMAL=`cat /sys/class/thermal/thermal_zone0/temp`
+    THERMAL=$(($THERMAL/1000))
+# Read Battery Status. Remove the comment when the battery is managed.
+     Bstatus=`cat /sys/class/power_supply/battery/capacity`
+#    Bstatus=100
+    if [ $AWAKE = "awake" ] && [ $Bstatus -gt "25" ] && [ $THERMAL -lt "95" ]; then
+#	Umount SDCARD.
+	umount /mnt/sdcard/.android_secure
+	umount /mnt/sdcard
+#	Notify to Power Service
+	cpowerservice 127.0.0.1 10000 WAKE_LOCK_TRUE
+        echo $AWAKE_GOVERNOR_FREQENCY_MAX100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+        echo $AWAKE_GOVERNOR_FREQENCY_MIN100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+        echo $AWAKE_GOVERNOR100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+      svc data enable
+      svc wifi prefer
+        log -p i -t screenstate_scaling "***  Status: awake   ***: switching CPU frequency governor to -> $AWAKE_GOVERNOR100"
+        AWAKE=
+    else
+#	Notify to Power Service
+	cpowerservice 127.0.0.1 10000 WAKE_LOCK_TRUE
+        echo $AWAKE_GOVERNOR_FREQENCY_MAX50 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+        echo $AWAKE_GOVERNOR_FREQENCY_MIN50 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+        echo $AWAKE_GOVERNOR50 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+      svc data disable
+      svc wifi prefer
+        log -p i -t screenstate_scaling "***  Status: awake   ***: switching CPU frequency governor to -> $AWAKE_GOVERNOR50"
+        AWAKE=
+   fi
+    SLEEPING=`cat /sys/power/wait_for_fb_sleep`
+    if [ $SLEEPING = "sleeping" ]; then
+# 	Notify to Power Service
+	cpowerservice 127.0.0.1 10000 WAKE_LOCK_FALSE
+        echo $SLEEP_GOVERNOR_FREQENCY_MAX > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+        echo $SLEEP_GOVERNOR_FREQENCY_MIN > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+        echo $SLEEP_GOVERNOR > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+#	Remount all unmounted devices.
+	vold -a
+      svc data disable
+        log -p i -t screenstate_scaling "*** Status: sleeping ***: switching CPU frequency governor to -> $SLEEP_GOVERNOR"
+        SLEEPING=
+    fi    
+done &)
