@@ -1,5 +1,0 @@
-echo ===== Preparing Kernel =====
-fatload usb 0:1 0x800000 /vInstaller/kernel/uImage_Android
-nand erase 0x500000 0x800000
-nand write.jffs2 0x800000 0x500000 0x800000
-savee
