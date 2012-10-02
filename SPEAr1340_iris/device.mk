@@ -41,7 +41,7 @@ PRODUCT_PACKAGES += \
 
 # audio implementation
 PRODUCT_PACKAGES += \
-	audio.primary.$(TARGET_BOARD_PLATFORM) \
+	audio.primary.iris \
 	libaudioutils
 
 # sensors implementation
@@ -52,9 +52,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
 	device/stm/SPEAr1340/init.rc:root/init.rc \
 	device/stm/SPEAr1340/init.spear.usb.rc:root/init.spear.usb.rc \
-	device/stm/SPEAr1340/ueventd.st-spear1340-evb.rc:root/ueventd.st-spear1340-evb.rc \
 	device/stm/SPEAr1340/spear/build_root.sh:build_root.sh \
-	device/stm/SPEAr1340/vold.fstab:system/etc/vold.fstab
+	device/stm/SPEAr1340_iris/ueventd.spear1340-lcad-iris.rc:root/ueventd.spear1340-lcad-iris.rc \
+	device/stm/SPEAr1340_iris/vold.fstab:system/etc/vold.fstab
 
 PRODUCT_COPY_FILES += \
 	device/stm/SPEAr1340/qwerty.kl:system/usr/keylayout/qwerty.kl
@@ -115,23 +115,18 @@ PRODUCT_PACKAGES += \
 	hx170dec.ko \
 	hx280enc.ko \
 	memalloc.ko \
-	mmapper.ko
-
-# WiFi driver and firmware
-ifeq ($(BOARD_USE_WIFI),true)
-	PRODUCT_PACKAGES += \
-		8192cu.ko \
-		wpa_supplicant.conf
-endif
-
-PRODUCT_PACKAGES += \
+	mmapper.ko \
+	8192cu.ko \
+	wpa_supplicant.conf \
 	LiveWallpapers \
 	LiveWallpapersPicker \
 	MagicSmokeWallpapers \
 	VisualizationWallpapers \
 	librs_jni \
 	SoundRecorder \
-	SpeechRecorder
+	SpeechRecorder \
+	Camera \
+	camera.iris
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
@@ -150,18 +145,12 @@ PRODUCT_COPY_FILES += \
 	frameworks/base/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
 	frameworks/base/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
 	device/stm/iris/Goodix_Capacitive_TouchScreen.idc:/system/usr/idc/Goodix_Capacitive_TouchScreen.idc \
-	frameworks/base/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml
+	frameworks/base/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
+	device/stm/SPEAr1340_iris/boot/uImage_Android:boot/uImage_Android \
+	device/stm/SPEAr1340_iris/boot/run.img:boot/run.img
 
-	TARGET_PREBUILT_KERNEL := device/stm/SPEAr1340_iris/boot/uImage_Android
-	PRODUCT_COPY_FILES += \
-		device/stm/SPEAr1340_iris/boot/uImage_Android:boot/uImage_Android \
-		device/stm/SPEAr1340_iris/boot/run.img:boot/run.img
-
-
-# Camera
-PRODUCT_PACKAGES += \
-	Camera \
-	camera.$(TARGET_BOARD_PLATFORM)
+TARGET_PREBUILT_KERNEL := device/stm/SPEAr1340_iris/boot/uImage_Android
+	
 
 
 
