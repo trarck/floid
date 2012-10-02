@@ -25,6 +25,7 @@ on init
     chmod 0664 /sys/class/i2c-adapter/i2c-0/0-001e/range
 
 # liblight sysfs attributes
+    chown system system /sys/class/backlight/backlight/brightness
     chmod 0664 /sys/class/backlight/backlight/brightness
 
 # for gyzro sysfs attributes and cts permission
