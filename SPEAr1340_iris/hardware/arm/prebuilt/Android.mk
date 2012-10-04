@@ -1,0 +1,68 @@
+
+ifneq ($(TARGET_SIMULATOR),true)
+  ifeq ($(TARGET_BOARD_PLATFORM),iris)
+  LOCAL_PATH := $(call my-dir)
+
+  include $(CLEAR_VARS)
+  LOCAL_MODULE := mali
+  LOCAL_MODULE_TAGS := debug eng optional
+  LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/modules
+  LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+  LOCAL_MODULE_SUFFIX := .ko
+  LOCAL_SRC_FILES := mali.ko
+  include $(BUILD_PREBUILT)
+
+  include $(CLEAR_VARS)
+  LOCAL_MODULE := ump
+  LOCAL_MODULE_TAGS := debug eng optional
+  LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/modules
+  LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+  LOCAL_MODULE_SUFFIX := .ko
+  LOCAL_SRC_FILES := ump.ko
+  include $(BUILD_PREBUILT)
+
+  include $(CLEAR_VARS)
+  LOCAL_MODULE := libEGL_mali
+  LOCAL_MODULE_TAGS := debug eng optional
+  LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/egl
+  LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+  LOCAL_MODULE_SUFFIX := .so
+  LOCAL_SRC_FILES := libEGL_mali.so
+  include $(BUILD_PREBUILT)
+
+  include $(CLEAR_VARS)
+  LOCAL_MODULE := libGLESv1_CM_mali
+  LOCAL_MODULE_TAGS := debug eng optional
+  LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/egl
+  LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+  LOCAL_MODULE_SUFFIX := .so
+  LOCAL_SRC_FILES := libGLESv1_CM_mali.so
+  include $(BUILD_PREBUILT)
+
+  include $(CLEAR_VARS)
+  LOCAL_MODULE := libGLESv2_mali
+  LOCAL_MODULE_TAGS := debug eng optional
+  LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/egl
+  LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+  LOCAL_MODULE_SUFFIX := .so
+  LOCAL_SRC_FILES := libGLESv2_mali.so
+  include $(BUILD_PREBUILT)
+
+  include $(CLEAR_VARS)
+  LOCAL_MODULE := libMali
+  LOCAL_MODULE_TAGS := debug eng optional
+  LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+  LOCAL_MODULE_SUFFIX := .so
+  LOCAL_SRC_FILES := libMali.so
+  include $(BUILD_PREBUILT)
+
+  include $(CLEAR_VARS)
+  LOCAL_MODULE := libUMP
+  LOCAL_MODULE_TAGS := debug eng optional
+  LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+  LOCAL_MODULE_SUFFIX := .so
+  LOCAL_SRC_FILES := libUMP.so
+  include $(BUILD_PREBUILT)
+
+  endif
+endif
