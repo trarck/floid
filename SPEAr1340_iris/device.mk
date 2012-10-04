@@ -73,7 +73,7 @@ PRODUCT_COPY_FILES += \
 	device/stm/SPEAr1340/spear/99complete:system/etc/init.d/99complete
 
 # Install Platform files (boot animation and boot splash image)
-
+PRODUCT_COPY_FILES += \
 	device/stm/SPEAr1340/local/initlogo.7inch.rle:root/initlogo.rle.keep
 
 PRODUCT_COPY_FILES += \
@@ -139,12 +139,12 @@ PRODUCT_COPY_FILES += \
 	packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:/system/etc/permissions/android.software.live_wallpaper.xml
 
 PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml \
+	device/stm/SPEAr1340/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml \
 	frameworks/base/data/etc/android.hardware.camera.xml:system/etc/permissions/android.hardware.camera.xml \
 	frameworks/base/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
 	frameworks/base/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
 	frameworks/base/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
-	device/stm/iris/Goodix_Capacitive_TouchScreen.idc:/system/usr/idc/Goodix_Capacitive_TouchScreen.idc \
+	device/stm/SPEAr1340_iris/Goodix_Capacitive_TouchScreen.idc:/system/usr/idc/Goodix_Capacitive_TouchScreen.idc \
 	frameworks/base/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
 	device/stm/SPEAr1340_iris/boot/uImage_Android:boot/uImage_Android \
 	device/stm/SPEAr1340_iris/boot/run.img:boot/run.img

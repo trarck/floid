@@ -23,7 +23,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 $(call inherit-product, device/stm/SPEAr1340_iris/device.mk)
 
 # Discard inherited values and use our own instead.
-PRODUCT_NAME := full_iris
-PRODUCT_DEVICE := iris
+PRODUCT_NAME := full_SPEAr1340_iris
+PRODUCT_DEVICE := SPEAr1340_iris
 PRODUCT_BRAND := STM
-PRODUCT_MODEL := STM iris platform
+PRODUCT_MODEL := STM SPEAr1340 iris platform
