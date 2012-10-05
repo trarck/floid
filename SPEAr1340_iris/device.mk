@@ -61,7 +61,7 @@ PRODUCT_COPY_FILES += \
 
 # Copy the insert module script
 PRODUCT_COPY_FILES += \
-	device/stm/SPEAr1340/spear/insmod_spear.sh:system/etc/insmod_spear.sh
+	device/stm/SPEAr1340_iris/spear/insmod_spear.sh:system/etc/insmod_spear.sh
 
 
 #SPEAr_battery script

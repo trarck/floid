@@ -27,11 +27,11 @@ TARGET_DIR=`pwd`/../prebuilt
 
 rm devicedrv/ump/arch
 make -C devicedrv/ump/ clean
-make -C devicedrv/ump/
+make -C devicedrv/ump/ -j25
 
 rm devicedrv/mali/arch
 make -C devicedrv/mali clean
-make -C devicedrv/mali
+make -C devicedrv/mali -j25
 
 cp devicedrv/mali/mali.ko $TARGET_DIR
 cp devicedrv/ump/ump.ko $TARGET_DIR
