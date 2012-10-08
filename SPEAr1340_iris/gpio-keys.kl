@@ -16,5 +16,5 @@
 # limitations under the License.
 
 #key 10    POWER		WAKE
-key 73    VOLUME_UP	WAKE
-key 72    VOLUME_DOWN 	WAKE
+key 115    VOLUME_UP		WAKE
+key 114    VOLUME_DOWN 		WAKE
