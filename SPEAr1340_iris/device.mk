@@ -1,5 +1,7 @@
 # Copyright (C) 2010 The Android Open Source Project
-# Copyright (C) 2012 Wind River Systems, Inc.
+# Copyright (C) 2012 STMicroelectronics.
+#
+# Author: Giuseppe Barba <giuseppe.barba@st.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,14 +52,15 @@ PRODUCT_PACKAGES += \
 
 ### Install Platform scripts
 PRODUCT_COPY_FILES += \
-	device/stm/SPEAr1340/init.rc:root/init.rc \
+	device/stm/SPEAr1340_iris/init.rc:root/init.rc \
 	device/stm/SPEAr1340/init.spear.usb.rc:root/init.spear.usb.rc \
 	device/stm/SPEAr1340/spear/build_root.sh:build_root.sh \
 	device/stm/SPEAr1340/ueventd.st-spear1340-evb.rc:root/ueventd.spear1340-lcad-iris.rc \
 	device/stm/SPEAr1340_iris/vold.fstab:system/etc/vold.fstab
 
 PRODUCT_COPY_FILES += \
-	device/stm/SPEAr1340/qwerty.kl:system/usr/keylayout/qwerty.kl
+	device/stm/SPEAr1340_iris/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
+	device/stm/SPEAr1340_iris/gpio-keys.kcm:system/usr/keychars/gpio-keys.kcm
 
 # Copy the insert module script
 PRODUCT_COPY_FILES += \
