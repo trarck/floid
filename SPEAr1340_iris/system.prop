@@ -14,8 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ro.secure=0
-wifi.interface=wlan0
+ro.sf.lcd_density=120
 
 #
 #system prop for opengles version
