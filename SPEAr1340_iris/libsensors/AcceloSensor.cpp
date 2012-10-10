@@ -35,7 +35,7 @@
 #define FETCH_FULL_EVENT_BEFORE_RETURN 1
 #define IGNORE_EVENT_TIME 350000000
 
-#define SENSOR_NAME     "LIS3DH"
+#define SENSOR_NAME     "LIS303DH"
 #define MIN_DELAY       1000000
 #define DELAY_1000_HZ   1000000
 #define DELAY_400_HZ    2500000
@@ -44,7 +44,7 @@
 #define MAX_DELAY       20000000
 #define MAX_RETRIES     5
 
-#define SYSFS_PATH_ACC  "/sys/devices/platform/i2c_designware.0/i2c-1/0-0030/"
+#define SYSFS_PATH_ACC  "/sys/class/i2c-adapter/i2c-1/1-0019/"
 
 /*****************************************************************************/
 AcceloSensor::AcceloSensor()
