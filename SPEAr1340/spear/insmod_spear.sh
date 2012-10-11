@@ -10,7 +10,7 @@ MKNOD="/system/xbin/busybox mknod"
 INSMOD="/system/xbin/busybox insmod"
 
 ##For 1GB boards
-$INSMOD /system/lib/modules/ump.ko ump_debug_level=0 ump_memory_address=0x38000000 ump_memory_size=0x08000000
+$INSMOD /system/lib/modules/ump.ko ump_debug_level=0
 $INSMOD /system/lib/modules/mali.ko mali_debug_level=0
 
 mali_major=`cat /proc/devices | $GREP mali | $CUT -c1-3`
@@ -28,7 +28,7 @@ ln -s /dev/mali /dev/gpu0
 $INSMOD /system/lib/modules/spear_test_battery.ko
 $INSMOD /system/lib/modules/hx170dec.ko
 $INSMOD /system/lib/modules/hx280enc.ko
-$INSMOD /system/lib/modules/memalloc.ko memalloc_memory_address=0x32600000 alloc_method=12
+$INSMOD /system/lib/modules/memalloc.ko
 $INSMOD /system/lib/modules/mmapper.ko
 
 hx170_major=`cat /proc/devices | $GREP hx170 | $CUT -c1-3`
