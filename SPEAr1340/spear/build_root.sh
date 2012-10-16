@@ -2,6 +2,7 @@
 
 CURR_PATH=`pwd`
 CROSS_TOOL=../../../../prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi
+ANDROID_BUILD_TOP=../../../../
 
 echo "Collect System Rootfs"
 cp -rf $CURR_PATH/system $CURR_PATH/root
@@ -16,6 +17,8 @@ for n in `find root -name *.so`
     done
 
 $CROSS_TOOL-strip -g -S -d $CURR_PATH/root/system/bin/*
+
+cp $ANDROID_BUILD_TOP/kernel/arch/arm/boot/uImage boot/uImage_Android
 
 echo "Update System permission"
 chown -R 1000:1000 $CURR_PATH/root
