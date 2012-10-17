@@ -27,6 +27,8 @@
 #include <xmit_osdep.h>
 #include <hal_init.h>
 #include <rtw_version.h>
+#include <linux/gpio.h>
+#include <mach/gpio.h>
 
 #ifndef CONFIG_USB_HCI
 
@@ -936,7 +938,10 @@ static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device
 	struct net_device *pnetdev;
 
 	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_drv_init\n"));
-	//printk("+rtw_drv_init\n");
+	
+	//Enable digital switch to power on WiFi chip
+	if (gpio_is_valid(PLGPIO_47))
+		gpio_set_value(PLGPIO_47, 1);
 
 	//2009.8.13, by Thomas
 	// In this probe function, O.S. will provide the usb interface pointer to driver.
@@ -1219,6 +1224,9 @@ _func_exit_;
 	printk("wlan link down\n");
 	rtd2885_wlan_netlink_sendMsg("linkdown", "8712");
 #endif
+	//Disable digital switch to power off WiFi chip
+	if (gpio_is_valid(PLGPIO_47))
+		gpio_set_value(PLGPIO_47, 0);
 
 
 _func_exit_;
