@@ -1,12 +1,3 @@
-echo "Set Android Bootargs"
-setenv bootargs 'console=ttyAMA0,115200 androidboot.console=ttyAMA0 android.checkjni=0 mem=411M rootdelay=3 root=/dev/sda3 init=/init video=db9000:800x480-32@0'
-fatload usb 0:2  0x02000 uimage_android
-
-echo "Stop USB"
-usb stop
-
-echo ----------------------------------
-echo Run Demo
-echo ------------
-
+setenv bootargs 'console=ttyAMA0,115200 androidboot.console=ttyAMA0 android.checkjni=0 mem=412M rootdelay=3 root=/dev/mmcblk0p2 init=/init video=db9000:800x480-32@0'
+fatload mmc 0:1  0x02000 uimage_android
 bootm 0x02000

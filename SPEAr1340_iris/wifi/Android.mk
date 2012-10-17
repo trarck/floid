@@ -1,4 +1,4 @@
-ifeq ($(BOARD_USE_WIFI),true)
+ifeq ($(BOARD_IRIS_USE_WIFI),true)
 
 SUBDIR_MAKEFILES := $(call all-subdir-makefiles)
 

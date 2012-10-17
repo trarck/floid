@@ -45,7 +45,7 @@ static _mali_osk_resource_t arch_configuration [] =
 		.type = OS_MEMORY,
 		.description = "OS Memory",
 		.alloc_order = 10, /* Lowest preference for this memory */
-		.size = 806 * 1024 * 1024, /* 806 MB */
+		.size = 412 * 1024 * 1024,
 		.flags = _MALI_CPU_WRITEABLE | _MALI_CPU_READABLE | _MALI_PP_READABLE | _MALI_PP_WRITEABLE |_MALI_GP_READABLE | _MALI_GP_WRITEABLE
 	},
 
@@ -58,7 +58,7 @@ static _mali_osk_resource_t arch_configuration [] =
 		.cpu_usage_adjust = 0x0,
 		.alloc_order = 0, /* Highest preference for this memory */
 #if MALI_USE_UNIFIED_MEMORY_PROVIDER != 0
-		.base = 0x3F000000, /* Start from 1008MB */
+		.base = 0x1F000000, /* Start from 1008MB */
 		.size = 0x01000000,
 #endif /* MALI_USE_UNIFIED_MEMORY_PROVIDER != 0 */
 		.flags = _MALI_CPU_WRITEABLE | _MALI_CPU_READABLE | _MALI_PP_READABLE | _MALI_PP_WRITEABLE |_MALI_GP_READABLE | _MALI_GP_WRITEABLE
@@ -66,31 +66,13 @@ static _mali_osk_resource_t arch_configuration [] =
 #endif /** USING_OS_MEMORY */
 #endif /* ! ONLY_ZBT */
 
-#if USING_ZBT
-	{	/* SPEAr */
-		.type = MEMORY,
-		.description = "Mali ZBT",
-		.alloc_order = 5, /* Medium preference for this memory */
-		.base = 0x0e000000,
-		.size = 0x01000000,
-		.flags = _MALI_CPU_WRITEABLE | _MALI_CPU_READABLE | _MALI_PP_READABLE | _MALI_PP_WRITEABLE |_MALI_GP_READABLE | _MALI_GP_WRITEABLE
-	},
 	{
 		.type = MEM_VALIDATION,
 		.description = "Framebuffer",
 		.base = 0x00000000,
-		.size = 0x10000000,
+		.size = 0x20000000, /* 1GB */
 		.flags = _MALI_CPU_WRITEABLE | _MALI_CPU_READABLE | _MALI_PP_WRITEABLE | _MALI_PP_READABLE
 	},
-#else /* !USING_ZBT */
-	{
-		.type = MEM_VALIDATION,
-		.description = "Framebuffer",
-		.base = 0x00000000,
-		.size = 0x40000000, /* 1GB */
-		.flags = _MALI_CPU_WRITEABLE | _MALI_CPU_READABLE | _MALI_PP_WRITEABLE | _MALI_PP_READABLE
-	},
-#endif /* !USING_ZBT */
 };
 
 #endif /* __ARCH_CONFIG_H__ */

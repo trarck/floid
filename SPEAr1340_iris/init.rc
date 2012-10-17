@@ -7,34 +7,18 @@ on early-init
 
 on init
 # accelerometer sysfs attributes
-    chown system system /sys/class/i2c-adapter/i2c-0/0-0019/delay
-    chown system system /sys/class/i2c-adapter/i2c-0/0-0019/mode
-    chown system system /sys/class/i2c-adapter/i2c-0/0-0019/range
-    chown system system /sys/class/i2c-adapter/i2c-0/0-0019/rate
-    chmod 0664 /sys/class/i2c-adapter/i2c-0/0-0019/delay
-    chmod 0664 /sys/class/i2c-adapter/i2c-0/0-0019/mode
-    chmod 0664 /sys/class/i2c-adapter/i2c-0/0-0019/range
-    chmod 0664 /sys/class/i2c-adapter/i2c-0/0-0019/rate
-
-# magnetometer sysfs attributes
-    chown system system /sys/class/i2c-adapter/i2c-0/0-001e/mode
-    chown system system /sys/class/i2c-adapter/i2c-0/0-001e/rate
-    chown system system /sys/class/i2c-adapter/i2c-0/0-001e/range
-    chmod 0664 /sys/class/i2c-adapter/i2c-0/0-001e/mode
-    chmod 0664 /sys/class/i2c-adapter/i2c-0/0-001e/rate
-    chmod 0664 /sys/class/i2c-adapter/i2c-0/0-001e/range
+    chown system system /sys/class/i2c-adapter/i2c-1/1-0019/delay
+    chown system system /sys/class/i2c-adapter/i2c-1/1-0019/mode
+    chown system system /sys/class/i2c-adapter/i2c-1/1-0019/range
+    chown system system /sys/class/i2c-adapter/i2c-1/1-0019/rate
+    chmod 0664 /sys/class/i2c-adapter/i2c-1/1-0019/delay
+    chmod 0664 /sys/class/i2c-adapter/i2c-1/1-0019/mode
+    chmod 0664 /sys/class/i2c-adapter/i2c-1/1-0019/range
+    chmod 0664 /sys/class/i2c-adapter/i2c-1/1-0019/rate
 
 # liblight sysfs attributes
     chown system system /sys/class/backlight/backlight/brightness
     chmod 0664 /sys/class/backlight/backlight/brightness
-
-# for gyzro sysfs attributes and cts permission
-    chown system system /sys/devices/platform/i2c_designware.0/i2c-0/0-0069/pollrate_ms
-    chown system system /sys/devices/platform/i2c_designware.0/i2c-0/0-0069/enable
-    chown system system /sys/devices/platform/i2c_designware.0/i2c-0/0-0069/range
-    chmod 0664 /sys/devices/platform/i2c_designware.0/i2c-0/0-0069/pollrate_ms
-    chmod 0664 /sys/devices/platform/i2c_designware.0/i2c-0/0-0069/enable
-    chmod 0664 /sys/devices/platform/i2c_designware.0/i2c-0/0-0069/range
 
 sysclktz 0
 
