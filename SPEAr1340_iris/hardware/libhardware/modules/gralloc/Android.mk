@@ -34,7 +34,7 @@ ifeq ($(BOARD_USES_OVERLAY),true)
 			alloc_device.cpp \
 			framebuffer_device.cpp
 
-		LOCAL_MODULE := gralloc.$(TARGET_BOARD_PLATFORM)
+		LOCAL_MODULE := gralloc.iris
 		LOCAL_MODULE_TAGS := optional
 		LOCAL_CFLAGS:= -DLOG_TAG=\"gralloc\" -DGRALLOC_32_BITS -DSTANDARD_LINUX_SCREEN -fpermissive
 		#LOCAL_CFLAGS+= -DMALI_VSYNC_EVENT_REPORT_ENABLE
