@@ -77,9 +77,6 @@ PRODUCT_COPY_FILES += \
 	device/stm/SPEAr1340/spear/10spear_battery:system/etc/init.d/10spear_battery \
 	device/stm/SPEAr1340/spear/spear_test_battery.ko:system/lib/modules/spear_test_battery.ko
 
-#SPEAr cUMS
-PRODUCT_COPY_FILES += \
-	device/stm/SPEAr1340/cUMS/cUMS.conf:system/etc/cUMS.conf
 
 #Complete script
 PRODUCT_COPY_FILES += \
@@ -206,10 +203,4 @@ endif
 PRODUCT_PACKAGES += \
 	Camera \
 	camera.$(TARGET_BOARD_PLATFORM)
-
-# cUMS
-PRODUCT_PACKAGES += \
-	cUMS
-
-
 
