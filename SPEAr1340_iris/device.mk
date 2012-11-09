@@ -69,7 +69,7 @@ PRODUCT_COPY_FILES += \
 
 #SPEAr_battery script
 PRODUCT_COPY_FILES += \
-	device/stm/SPEAr1340/spear/spear_test_battery.ko:system/lib/modules/spear_test_battery.ko
+	device/stm/SPEAr1340_iris/spear/spear_test_battery.ko:system/lib/modules/spear_test_battery.ko
 
 #Complete script
 PRODUCT_COPY_FILES += \
