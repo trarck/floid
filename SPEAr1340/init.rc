@@ -399,22 +399,6 @@ service ueventd /sbin/ueventd
     class core
     critical
 
-service init-d /sbin/sysinit.rc
-    class core
-    oneshot
-
-service powerservice /system/xbin/powerservice
-    class core
-    user root
-    group root
-    oneshot
-
-service cumsservice /system/xbin/cumsservice
-    class core
-    user root
-    group root
-    oneshot
-
 service logcat-system /system/bin/logcat -f /data/logs/logcat.txt  -r 1024 -n 10 -v time -b system
     class main
     user root
