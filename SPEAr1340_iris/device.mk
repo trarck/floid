@@ -71,10 +71,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	device/stm/SPEAr1340_iris/spear/spear_test_battery.ko:system/lib/modules/spear_test_battery.ko
 
-#Complete script
-PRODUCT_COPY_FILES += \
-	device/stm/SPEAr1340/spear/99complete:system/etc/init.d/99complete
-
 # Install Platform files (boot animation and boot splash image)
 PRODUCT_COPY_FILES += \
 	device/stm/SPEAr1340/local/initlogo.7inch.rle:root/initlogo.rle.keep
