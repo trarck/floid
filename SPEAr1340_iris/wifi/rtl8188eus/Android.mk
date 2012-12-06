@@ -1,22 +1,22 @@
-ifeq ($(WIFI_MODULE_TYPE),8192CU)
+ifeq ($(WIFI_MODULE_TYPE),8188EUS)
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 export ARCH=arm
 export ANDROID_ROOT=$(ANDROID_BUILD_TOP)
 
-8192CU_PATH := $(LOCAL_PATH)
+8188EUS_PATH := $(LOCAL_PATH)
 
-module := 8192cu.ko
-cleanup := $(8192CU_PATH)/dummy
+module := 8188eu.ko
+cleanup := $(8188EUS_PATH)/dummy
 
 .PHONY := $(module) $(cleanup)
 
 $(cleanup):
-	$(MAKE) -C $(8192CU_PATH) clean
+	$(MAKE) -C $(8188EUS_PATH) clean
 
-$(8192CU_PATH)/$(module): $(cleanup)
-	$(MAKE) -C $(8192CU_PATH)
+$(8188EUS_PATH)/$(module): $(cleanup)
+	$(MAKE) -C $(8188EUS_PATH)
 
 LOCAL_MODULE :=  $(module)
 LOCAL_MODULE_TAGS := debug eng optional
