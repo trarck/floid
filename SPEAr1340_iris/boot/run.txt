@@ -1,4 +1,4 @@
 setenv bootargs 'console=ttyAMA0,115200 androidboot.console=ttyAMA0 android.checkjni=0 mem=393M root=/dev/mmcblk0p2 rootfstype=ext3 rootwait init=/init video=db9000:800x480-32@0'
-fatload mmc 0:1  0x02000 /vInstaller/kernel/uimage_android
+fatload mmc 0:1  0x02000 uimage_android
 usb stop
 bootm 0x02000
