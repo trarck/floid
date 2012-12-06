@@ -26,6 +26,8 @@
 #include <xmit_osdep.h>
 #include <hal_intf.h>
 #include <rtw_version.h>
+#include <linux/gpio.h>
+#include <mach/gpio.h>
 
 #ifndef CONFIG_USB_HCI
 
@@ -1153,6 +1155,11 @@ static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device
 	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_drv_init\n"));
 	//DBG_871X("+rtw_drv_init\n");
 
+#ifdef CONFIG_POWER_GPIO
+	//Enable digital switch to power on WiFi chip
+	if (gpio_is_valid(PLGPIO_47))
+		gpio_set_value(PLGPIO_47, 1);
+#endif
 	//2009.8.13, by Thomas
 	// In this probe function, O.S. will provide the usb interface pointer to driver.
 	// We have to increase the reference count of the usb device structure by using the usb_get_dev function.
@@ -1481,6 +1488,12 @@ _func_enter_;
 	#ifdef DBG_MEM_ALLOC
 	rtw_dump_mem_stat ();
 	#endif
+#ifdef CONFIG_POWER_GPIO
+	//Disable digital switch to power off WiFi chip
+	if (gpio_is_valid(PLGPIO_47))
+		gpio_set_value(PLGPIO_47, 0);
+#endif
+
 _func_exit_;
 
 	return;
