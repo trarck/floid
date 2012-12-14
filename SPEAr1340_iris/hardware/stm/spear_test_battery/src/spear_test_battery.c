@@ -24,13 +24,9 @@
 #include <asm/io.h>
 #include <linux/spear_adc.h>
 
-#define BAT_ADC_CHN ADC_CHANNEL1
+#define BAT_ADC_CHN	ADC_CHANNEL1
 
 static int spear_test_battery_bat_get_property(struct power_supply *psy,
-					enum power_supply_property psp,
-					union power_supply_propval *val);
-
-static int spear_test_battery_ac_get_property(struct power_supply *psy,
 					enum power_supply_property psp,
 					union power_supply_propval *val);
 
@@ -47,10 +43,6 @@ static enum power_supply_property spear_test_battery_battery_props[] = {
 	POWER_SUPPLY_PROP_CAPACITY,
 };
 
-static enum power_supply_property spear_test_battery_ac_props[] = {
-	POWER_SUPPLY_PROP_ONLINE,
-};
-
 static struct power_supply spear_test_battery_bat = {
 	.name = "battery",
 	.type = POWER_SUPPLY_TYPE_BATTERY,
@@ -60,46 +52,13 @@ static struct power_supply spear_test_battery_bat = {
 	.use_for_apm 	= 1,
 };
 
-static struct power_supply spear_test_battery_ac = {
-	.name = "ac",
-	.type = POWER_SUPPLY_TYPE_MAINS,
-	.properties 	=  spear_test_battery_ac_props,
-	.num_properties = ARRAY_SIZE(spear_test_battery_ac_props),
-	.get_property	= spear_test_battery_ac_get_property,
-};
-
-static struct power_supply spear_test_battery_usb = {
-	.name = "usb",
-	.type = POWER_SUPPLY_TYPE_MAINS,
-	.properties 	=  spear_test_battery_ac_props,
-	.num_properties = ARRAY_SIZE(spear_test_battery_ac_props),
-	.get_property	= spear_test_battery_ac_get_property,
-};
-
-
-static int spear_test_battery_ac_get_property(struct power_supply *psy,
-					enum power_supply_property psp,
-					union power_supply_propval *val)
-{
-	int ret = 0;
-
-	switch (psp) {
-		case POWER_SUPPLY_PROP_ONLINE:
-			val->intval = 1;
-			break;
-		default:
-			ret = -EINVAL;
-			break;
-	}
-	return ret;
-}
-
-/** adc return volt value of pin.
- *  2100mV take as full charged, 1750mV take as low power.
- *  currently just use a simple alogrithm for calc power level.
+/**
+ * adc return volt value of pin.
+ * 2000mV take as full charged, 1700mV take as low power.
+ * currently just use a simple alogrithm for calc power level.
  */
-#define FULL_CHARGED 2100
-#define LOW_POWER 1750
+#define FULL_CHARGED 2000
+#define LOW_POWER 1700
 static uint spear_test_battery_bat_get_capacity(struct platform_device *pdev)
 {
 	uint adc_val;
@@ -109,11 +68,9 @@ static uint spear_test_battery_bat_get_capacity(struct platform_device *pdev)
 	spear_adc_get_data(pdev, BAT_ADC_CHN, &adc_val, 1);
 	adc_val = adc_val > FULL_CHARGED ? FULL_CHARGED : adc_val;
 	adc_val = adc_val < LOW_POWER ? LOW_POWER : adc_val;
-	printk("%s: %d: adc_val = %d\n", __func__, __LINE__, adc_val);
 
 	/* calculate power level */
 	level = (adc_val - LOW_POWER) * 100 / (FULL_CHARGED - LOW_POWER);
-	printk("%s: %d: level = %d\n", __func__, __LINE__, level);
 
 	return level;
 }
@@ -160,7 +117,7 @@ static int spear_test_battery_bat_get_property(struct power_supply *psy,
 static void spear_test_battery_work(struct work_struct *work)
 {
 	const int interval = HZ * 30; /* seconds */
-	static uint old_level;
+	static uint old_level = -1;
 	uint level;
 
 	level = spear_test_battery_bat_get_capacity(spear_test_battery_pdev);
@@ -221,42 +178,27 @@ static int __init spear_test_battery_init(void)
 				&spear_test_battery_bat);
 	if (ret)
 		goto bat_failed;
-	ret = power_supply_register(&spear_test_battery_pdev->dev,
-				&spear_test_battery_ac);
-	if (ret)
-		goto ac_failed;
-	ret = power_supply_register(&spear_test_battery_pdev->dev,
-				&spear_test_battery_usb);
-	if (ret)
-		goto usb_failed;
 
 	/** init delay work */
 	INIT_DELAYED_WORK(&g_spear_test_battery_work, spear_test_battery_work);
 	schedule_delayed_work(&g_spear_test_battery_work, 0);
 
 	printk(KERN_INFO "spear_test_battery: loaded.\n");
-	goto success;
+	return ret;
 
 bat_failed:
-	power_supply_unregister(&spear_test_battery_bat);
-ac_failed:
-	power_supply_unregister(&spear_test_battery_ac);
-usb_failed:
-	power_supply_unregister(&spear_test_battery_usb);
+	spear_adc_chan_put(spear_test_battery_pdev, BAT_ADC_CHN);
 adc_failed:
 	platform_device_unregister(spear_test_battery_pdev);
-success:
 	return ret;
 }
 
 static void __exit spear_test_battery_exit(void)
 {
 	cancel_delayed_work_sync(&g_spear_test_battery_work);
-	power_supply_unregister(&spear_test_battery_bat);
-	power_supply_unregister(&spear_test_battery_ac);
-	power_supply_unregister(&spear_test_battery_usb);
-	platform_device_unregister(spear_test_battery_pdev);
 	spear_adc_chan_put(spear_test_battery_pdev, BAT_ADC_CHN);
+	power_supply_unregister(&spear_test_battery_bat);
+	platform_device_unregister(spear_test_battery_pdev);
 	printk(KERN_INFO "spear_test_battery: unloaded.\n");
 }
 
