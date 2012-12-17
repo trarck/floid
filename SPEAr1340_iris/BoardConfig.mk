@@ -12,7 +12,7 @@ ifeq ($(BOARD_IRIS_USE_WIFI),true)
         WPA_SUPPLICANT_VERSION := VER_0_6_X
         BOARD_WPA_SUPPLICANT_DRIVER := WEXT
 
-ifeq ($(WIFI_MODULE_TYPE),8191CU)
+ifeq ($(WIFI_MODULE_TYPE),8192CU)
         BOARD_WLAN_DEVICE := 8192cu
         WIFI_DRIVER_MODULE_PATH     :=  "/system/lib/modules/8192cu.ko"
         WIFI_DRIVER_MODULE_NAME     :=  "8192cu"

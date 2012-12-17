@@ -115,7 +115,6 @@ PRODUCT_PACKAGES += \
 	hx280enc.ko \
 	memalloc.ko \
 	mmapper.ko \
-	8192cu.ko \
 	wpa_supplicant.conf \
 	LiveWallpapers \
 	LiveWallpapersPicker \
@@ -126,6 +125,16 @@ PRODUCT_PACKAGES += \
 	SpeechRecorder \
 	Camera \
 	camera.iris
+
+ifeq ($(WIFI_MODULE_TYPE),8188EUS)
+PRODUCT_PACKAGES += \
+	8188eu.ko
+endif
+
+ifeq ($(WIFI_MODULE_TYPE),8192CU)
+PRODUCT_PACKAGES += \
+	8192cu.ko
+endif
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
