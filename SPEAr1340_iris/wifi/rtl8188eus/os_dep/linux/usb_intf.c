@@ -1158,7 +1158,7 @@ static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device
 #ifdef CONFIG_POWER_GPIO
 	//Enable digital switch to power on WiFi chip
 	if (gpio_is_valid(PLGPIO_47))
-		gpio_set_value(PLGPIO_47, 1);
+		gpio_set_value(PLGPIO_47, 0);
 #endif
 	//2009.8.13, by Thomas
 	// In this probe function, O.S. will provide the usb interface pointer to driver.
@@ -1361,6 +1361,12 @@ error:
 
 	RT_TRACE(_module_hci_intfs_c_,_drv_err_,("-871x_usb - drv_init, fail!\n"));
 	//DBG_871X("-871x_usb - drv_init, fail!\n");
+	
+#ifdef CONFIG_POWER_GPIO
+	//Disable digital switch to power off WiFi chip
+	if (gpio_is_valid(PLGPIO_47))
+		gpio_set_value(PLGPIO_47, 1);
+#endif
 
 	return -ENODEV;
 }
@@ -1491,7 +1497,7 @@ _func_enter_;
 #ifdef CONFIG_POWER_GPIO
 	//Disable digital switch to power off WiFi chip
 	if (gpio_is_valid(PLGPIO_47))
-		gpio_set_value(PLGPIO_47, 0);
+		gpio_set_value(PLGPIO_47, 1);
 #endif
 
 _func_exit_;
