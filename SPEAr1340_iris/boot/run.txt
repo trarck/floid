@@ -1,3 +1,59 @@
+echo Display Logo
+echo ------------
+
+fatload mmc 0:1 0x3F000000 800x480x32.raw
+
+echo PAD MUXING reg 5
+mw 0xe0700690 0xFFFFF81F
+
+echo PAD MUXING reg 6, enforcing SD write protect gpio
+mw 0xe0700694 0xffebffff
+
+echo Select CLCD_SSCG as input clock
+mw 0xe0700244 0x00000403
+
+echo write SSCG configuration for 250MHz Vco1 -> 32.04 MHz PClock
+mw 0xE070027C 0xF9C0
+
+echo enable PERIP1_CLK_ENB
+mw 0xE070030C 0x822837f
+
+echo configure CR1, IP disabled
+mw 0xE1000000 0x00121D98
+
+echo configure HTR
+mw 0xE1000008 0x032A329B
+
+echo configure VTR1
+mw 0xE100000C 0x00181C02
+
+echo configure VTR2
+mw 0xE1000010 0x000001E0
+
+echo configure PCTR to use SSCG directly
+mw 0xE1000014 0x00000600
+
+echo configure DBAR
+mw 0xE1000028 0x3F000000
+
+echo configure DEAR ---> 800x480x4
+mw 0xE1000030 0x3F177000
+
+echo configure HVTER
+mw 0xE1000044 0x00000000
+
+echo configure PWMFR
+mw 0xE1000034 0x00100018
+
+echo configure PWMDCR
+mw 0xE1000038 0x00000080
+
+echo configure MMR ---> DEAR | 0x2
+mw 0xE1000FFC 0x3F177002
+
+echo enable IP
+mw 0xE1000000 0x00121D9B
+
 setenv bootargs 'console=ttyAMA0,115200 androidboot.console=ttyAMA0 android.checkjni=0 mem=393M root=/dev/mmcblk0p2 rootfstype=ext3 rootwait init=/init video=db9000:800x480-32@0'
 fatload mmc 0:1  0x02000 uimage_android
 usb stop
