@@ -101,7 +101,7 @@ PRODUCT_PACKAGES += \
 
 # These are the OpenMAX IL configuration files
 PRODUCT_COPY_FILES += \
-	media_profiles.xml:system/etc/media_profiles.xml
+	device/stm/SPEAr1340_iris/media_profiles.xml:system/etc/media_profiles.xml
 
 # Video decoder modules
 PRODUCT_PACKAGES += \
@@ -135,6 +135,10 @@ ifeq ($(WIFI_MODULE_TYPE),8192CU)
 PRODUCT_PACKAGES += \
 	8192cu.ko
 endif
+
+# HDMI modules
+PRODUCT_PACKAGES += \
+	it6612x_mod.ko
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
