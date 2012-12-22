@@ -38,6 +38,9 @@
          android.hardware.camera.xml or 
          android.hardware.camera.autofocus.xml or 
          android.hardware.camera.autofocus-flash.xml -->
+    <feature name="android.hardware.camera.xml" />
+    <feature name="android.hardware.camera.front.xml" />
+    <feature name="android.hardware.wifi.xml" />
     <!-- devices with a front facing camera must include
          android.hardware.camera.front.xml -->
     <!-- devices with WiFi must also include android.hardware.wifi.xml -->

@@ -101,7 +101,7 @@ PRODUCT_PACKAGES += \
 
 # These are the OpenMAX IL configuration files
 PRODUCT_COPY_FILES += \
-	device/stm/SPEAr1340/media_profiles.xml:system/etc/media_profiles.xml
+	media_profiles.xml:system/etc/media_profiles.xml
 
 # Video decoder modules
 PRODUCT_PACKAGES += \
