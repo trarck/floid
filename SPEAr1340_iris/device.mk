@@ -55,7 +55,7 @@ PRODUCT_COPY_FILES += \
 	device/stm/SPEAr1340_iris/init.rc:root/init.rc \
 	device/stm/SPEAr1340/init.spear.usb.rc:root/init.spear.usb.rc \
 	device/stm/SPEAr1340/spear/build_root.sh:build_root.sh \
-	device/stm/SPEAr1340/ueventd.st-spear1340-evb.rc:root/ueventd.spear1340-lcad-iris.rc \
+	device/stm/SPEAr1340_iris/ueventd.spear1340-lcad-iris.rc:root/ueventd.spear1340-lcad-iris.rc \
 	device/stm/SPEAr1340_iris/vold.fstab:system/etc/vold.fstab
 
 PRODUCT_COPY_FILES += \

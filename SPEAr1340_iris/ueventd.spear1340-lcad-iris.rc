@@ -1,0 +1,3 @@
+
+/dev/video0               0660   system     camera
+/dev/video1               0660   system     camera
