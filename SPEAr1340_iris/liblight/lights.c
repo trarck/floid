@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+#define LOG_NDEBUG 1
 #define LOG_TAG "lights"
+
 #include <cutils/log.h>
 #include <stdint.h>
 #include <string.h>
@@ -28,7 +30,7 @@
 #define MAX_UI_BRIGHTNESS 0xFF
 #define MIN_UI_BRIGHTNESS 0x0
 #define MAX_BRIGHTNESS 0x0
-#define MIN_BRIGHTNESS 0x60
+#define MIN_BRIGHTNESS 0x90
 #define CONVERT(a) (int)((MAX_UI_BRIGHTNESS - a)*((MIN_BRIGHTNESS - MAX_BRIGHTNESS + 0.0)/(MAX_UI_BRIGHTNESS - MIN_UI_BRIGHTNESS)))
 
 static pthread_once_t g_init = PTHREAD_ONCE_INIT;
@@ -79,7 +81,7 @@ static int set_light_backlight(struct light_device_t *dev,
 
 	pthread_mutex_lock(&g_lock);
 	err = write_int(LCD_FILE, brightness);
-
+	LOGV("set_light_backlight: brightness = %d", brightness);
 	pthread_mutex_unlock(&g_lock);
 	return err;
 }
