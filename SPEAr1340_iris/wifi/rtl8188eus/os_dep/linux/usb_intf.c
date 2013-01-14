@@ -1159,11 +1159,6 @@ static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device
 	//Enable digital switch to power on WiFi chip
 	if (gpio_is_valid(PLGPIO_47))
 		gpio_set_value(PLGPIO_47, 0);
-	
-	printk("Power ON WiFi module!\n");
-	
-	//give the time to bring up WiFi module
-	msleep(100); 
 #endif
 	//2009.8.13, by Thomas
 	// In this probe function, O.S. will provide the usb interface pointer to driver.
@@ -1371,8 +1366,6 @@ error:
 	//Disable digital switch to power off WiFi chip
 	if (gpio_is_valid(PLGPIO_47))
 		gpio_set_value(PLGPIO_47, 1);
-	
-	printk("Power OFF WiFi module due to some error!\n");
 #endif
 
 	return -ENODEV;
@@ -1505,8 +1498,6 @@ _func_enter_;
 	//Disable digital switch to power off WiFi chip
 	if (gpio_is_valid(PLGPIO_47))
 		gpio_set_value(PLGPIO_47, 1);
-	
-	printk("Power OFF WiFi module!\n");
 #endif
 
 _func_exit_;
