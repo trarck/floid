@@ -1,7 +1,7 @@
 echo Display Logo
 echo ------------
 
-fatload mmc 0:1 0x3F000000 800x480x32.raw
+fatload mmc 0:1 0x17900000 800x480x32.raw
 
 echo PAD MUXING reg 5
 mw 0xe0700690 0xFFFFF81F
@@ -34,10 +34,10 @@ echo configure PCTR to use SSCG directly
 mw 0xE1000014 0x00000600
 
 echo configure DBAR
-mw 0xE1000028 0x3F000000
+mw 0xE1000028 0x17900000
 
 echo configure DEAR ---> 800x480x4
-mw 0xE1000030 0x3F177000
+mw 0xE1000030 0x17A77000
 
 echo configure HVTER
 mw 0xE1000044 0x00000000
