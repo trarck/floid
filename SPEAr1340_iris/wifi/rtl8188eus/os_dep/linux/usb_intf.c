@@ -1155,11 +1155,6 @@ static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device
 	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_drv_init\n"));
 	//DBG_871X("+rtw_drv_init\n");
 
-#ifdef CONFIG_POWER_GPIO
-	//Enable digital switch to power on WiFi chip
-	if (gpio_is_valid(PLGPIO_47))
-		gpio_set_value(PLGPIO_47, 0);
-#endif
 	//2009.8.13, by Thomas
 	// In this probe function, O.S. will provide the usb interface pointer to driver.
 	// We have to increase the reference count of the usb device structure by using the usb_get_dev function.
@@ -1361,12 +1356,6 @@ error:
 
 	RT_TRACE(_module_hci_intfs_c_,_drv_err_,("-871x_usb - drv_init, fail!\n"));
 	//DBG_871X("-871x_usb - drv_init, fail!\n");
-	
-#ifdef CONFIG_POWER_GPIO
-	//Disable digital switch to power off WiFi chip
-	if (gpio_is_valid(PLGPIO_47))
-		gpio_set_value(PLGPIO_47, 1);
-#endif
 
 	return -ENODEV;
 }
@@ -1494,11 +1483,6 @@ _func_enter_;
 	#ifdef DBG_MEM_ALLOC
 	rtw_dump_mem_stat ();
 	#endif
-#ifdef CONFIG_POWER_GPIO
-	//Disable digital switch to power off WiFi chip
-	if (gpio_is_valid(PLGPIO_47))
-		gpio_set_value(PLGPIO_47, 1);
-#endif
 
 _func_exit_;
 
@@ -1511,6 +1495,17 @@ extern int console_suspend_enabled;
 
 static int __init rtw_drv_entry(void)
 {
+#ifdef CONFIG_POWER_GPIO
+	//Enable digital switch to power on WiFi chip
+	if (gpio_is_valid(PLGPIO_47))
+		gpio_set_value(PLGPIO_47, 0);
+
+	printk("Power ON WiFi module 2!\n");
+
+	//give the time to bring up WiFi module
+	msleep(500);
+#endif
+
 #ifdef CONFIG_PLATFORM_RTK_DMP
 	u32 tmp;
 	tmp=readl((volatile unsigned int*)0xb801a608);
@@ -1581,6 +1576,14 @@ static void __exit rtw_drv_halt(void)
 	sw_usb_disable_hcd(usb_wifi_host);
 #endif //ifndef CONFIG_RTL8723A	
 #endif	//CONFIG_PLATFORM_ARM_SUN4I
+
+#ifdef CONFIG_POWER_GPIO
+	//Disable digital switch to power off WiFi chip
+	if (gpio_is_valid(PLGPIO_47))
+		gpio_set_value(PLGPIO_47, 1);
+
+	printk("Power OFF WiFi module!\n");
+#endif
 }
 
 
