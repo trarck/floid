@@ -81,15 +81,15 @@ struct route_setting defaults[] = {
     /* general */
     {
         .ctl_name = MIXER_MASTER_PLAYBACK_VOLUME,
-        .intval = 110,
+        .intval = 100,
     },
     {
         .ctl_name = MIXER_LEFT_PLAYBACK_VOLUME,
-        .intval = 110,
+        .intval = 100,
     },
     {
         .ctl_name = MIXER_RIGHT_PLAYBACK_VOLUME,
-        .intval = 110,
+        .intval = 100,
     },
     {
         .ctl_name = MIXER_MASTER_MUTE,
