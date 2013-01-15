@@ -73,9 +73,6 @@ PRODUCT_COPY_FILES += \
 
 # Install Platform files (boot animation and boot splash image)
 PRODUCT_COPY_FILES += \
-	device/stm/SPEAr1340/local/initlogo.7inch.rle:root/initlogo.rle.keep
-
-PRODUCT_COPY_FILES += \
 	device/stm/SPEAr1340/local/bootanimation.zip:data/local/bootanimation.zip
 
 PRODUCT_LOCALES := mdpi normal
