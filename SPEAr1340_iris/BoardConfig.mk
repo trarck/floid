@@ -9,8 +9,9 @@ BOARD_IRIS_USE_WIFI := true
 WIFI_MODULE_TYPE := 8188EUS
 
 ifeq ($(BOARD_IRIS_USE_WIFI),true)
-        WPA_SUPPLICANT_VERSION := VER_0_6_X
-        BOARD_WPA_SUPPLICANT_DRIVER := WEXT
+        WPA_SUPPLICANT_VERSION := VER_0_8_X
+        BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_wext
+        BOARD_HOSTAPD_PRIVATE_LIB   := lib_driver_cmd_wext
 
 ifeq ($(WIFI_MODULE_TYPE),8192CU)
         BOARD_WLAN_DEVICE := 8192cu
@@ -18,7 +19,7 @@ ifeq ($(WIFI_MODULE_TYPE),8192CU)
         WIFI_DRIVER_MODULE_NAME     :=  "8192cu"
 endif
 ifeq ($(WIFI_MODULE_TYPE),8188EUS)
-	BOARD_WLAN_DEVICE := 8188eu
+        BOARD_WLAN_DEVICE := 8188eu
         WIFI_DRIVER_MODULE_PATH     :=  "/system/lib/modules/8188eu.ko"
         WIFI_DRIVER_MODULE_NAME     :=  "8188eu"
 endif
