@@ -24,7 +24,7 @@ sysclktz 0
 
 loglevel 3
 setprop hw.nophone true
-setprop hw.nopm true
+#setprop hw.nopm true
 #setprop debug.sf.hw 0
 setprop hwui.print_config "all"
 #setprop debug.egl.hw 0
@@ -32,7 +32,6 @@ setprop hwui.print_config "all"
 setprop ro.radio.noril yes
 setprop wlan.interface "wlan0"
 setprop wlan.driver.status "ok"
-setprop wlan.modpath "/system/lib/modules/8192cu.ko"
 setprop dalvik.vm.heapsize 48m
 setprop service.adb.tcp.port 5555
 
@@ -133,7 +132,6 @@ setprop service.adb.tcp.port 5555
 
 # Backward compatibility
     symlink /system/etc /etc
-    symlink /initlogo.rle.keep /initlogo.rle
     symlink /mnt/sdcard /sdcard
 # Right now vendor lives on the same filesystem as system,
 # but someday that may change.
