@@ -37,6 +37,9 @@
 #define MALI_MEM_DESCRIPTORS_INIT 64
 #define MALI_MEM_DESCRIPTORS_MAX 65536
 
+int mali_memory_address = -1;
+int mali_memory_size = -1;
+
 typedef struct dedicated_memory_info
 {
 	u32 base;
@@ -377,6 +380,12 @@ _mali_osk_errcode_t mali_memory_core_resource_dedicated_memory(_mali_osk_resourc
 	dedicated_memory_info * cleanup_data;
 
 	u32 alloc_order = resource->alloc_order;
+
+    if (mali_memory_address != -1)
+		resource->base = mali_memory_address;
+
+	if (mali_memory_size != -1)
+		resource->size = mali_memory_size;
 
 	/* do the low level linux operation first */
 

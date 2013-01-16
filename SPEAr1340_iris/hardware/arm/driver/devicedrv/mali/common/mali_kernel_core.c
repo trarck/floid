@@ -61,6 +61,8 @@ static _mali_system_info *system_info = NULL;
 static u32 system_info_size = 0;
 static u32 first_pp_offset = 0;
 
+
+
 #define WATCHDOG_MSECS_DEFAULT 4000 /* 4 s */
 
 /* timer related */

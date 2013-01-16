@@ -25,6 +25,27 @@
 #include <mach/misc_regs.h> 
 #include <linux/module.h>   /* kernel module definitions */
 
+/* The base address of the memory block for the dedicated memory backend */
+extern int mali_memory_address;
+module_param(mali_memory_address, int, S_IRUSR | S_IWUSR | S_IWGRP | S_IRGRP | S_IROTH); /* rw-rw-r-- */
+MODULE_PARM_DESC(mali_memory_address, "The physical address to map for the dedicated memory backend");
+
+/* The size of the memory block for the dedicated memory backend */
+extern int mali_memory_size;
+module_param(mali_memory_size, int, S_IRUSR | S_IWUSR | S_IWGRP | S_IRGRP | S_IROTH); /* rw-rw-r-- */
+MODULE_PARM_DESC(mali_memory_size, "The size of fixed memory to map in the dedicated memory backend");
+
+
+/* The base address of the memory block for the dedicated memory backend */
+extern int mem_validation_base;
+module_param(mem_validation_base, int, S_IRUSR | S_IWUSR | S_IWGRP | S_IRGRP | S_IROTH); /* rw-rw-r-- */
+MODULE_PARM_DESC(mem_validation_base, "The base physical address for memory validation");
+
+/* The size of the memory block for the dedicated memory backend */
+extern int mem_validation_size;
+module_param(mem_validation_size, int, S_IRUSR | S_IWUSR | S_IWGRP | S_IRGRP | S_IROTH); /* rw-rw-r-- */
+MODULE_PARM_DESC(mem_validation_size, "The memory size for memory validation");
+
 void spear_mali_init(void)
 {
 	//unsigned long val;

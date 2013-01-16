@@ -14,6 +14,9 @@
 
 #define MALI_INVALID_MEM_ADDR 0xFFFFFFFF
 
+int mem_validation_base = -1;
+int mem_validation_size = -1;
+
 typedef struct
 {
 	u32 phys_base;        /**< Mali physical base of the memory, page aligned */
@@ -39,8 +42,16 @@ _mali_osk_errcode_t mali_mem_validation_add_range(const _mali_osk_resource_t *re
 		return _MALI_OSK_ERR_FAULT;
 	}
 
-	mali_mem_validator.phys_base = resource->base;
-	mali_mem_validator.size = resource->size;
+    if (mem_validation_base != -1)
+        mali_mem_validator.phys_base = mem_validation_base;
+    else
+	    mali_mem_validator.phys_base = resource->base;
+
+    if (mem_validation_size != -1)
+        mali_mem_validator.size = mem_validation_size;
+    else
+	    mali_mem_validator.size = resource->size;
+
 	MALI_DEBUG_PRINT(2, ("Memory Validator '%s' installed for Mali physical address base=0x%08X, size=0x%08X\n",
 	                 resource->description, mali_mem_validator.phys_base, mali_mem_validator.size));
 
