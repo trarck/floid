@@ -108,6 +108,8 @@ static int spear_charger_status(void)
 	st1 = gpio_get_value_cansleep(battery_pdata->st1);
 	st2 = gpio_get_value_cansleep(battery_pdata->st2);
 
+	printk("Battery debug: st1 = %d, st2 = %d\n", st1, st2);
+
 	if (st1 == 0 && st2 == 1) { /* st1: on, st2: off, charge in progress */
 		return POWER_SUPPLY_STATUS_CHARGING;
 	} else if (st1 == 1 && st2 == 0) { /* st1: off, st2: on, charge done */
@@ -224,7 +226,7 @@ static int spear_battery_get_property(struct power_supply *psy,
 			val->intval = 20;
 			break;
 		case POWER_SUPPLY_PROP_VOLTAGE_NOW:
-			val->intval = 5;
+			val->intval = spear_battery_adc_value(battery_pdata->adc_volt) * 2 * 1000;
 			break;
 		default:
 			ret = -EINVAL;
