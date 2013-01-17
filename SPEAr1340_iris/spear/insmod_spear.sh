@@ -25,7 +25,7 @@ chmod 0666 /dev/mali
 
 ln -s /dev/mali /dev/gpu0
 
-$INSMOD /system/lib/modules/spear_test_battery.ko
+$INSMOD /system/lib/modules/spear_battery.ko
 $INSMOD /system/lib/modules/hx170dec.ko
 $INSMOD /system/lib/modules/hx280enc.ko
 $INSMOD /system/lib/modules/memalloc.ko

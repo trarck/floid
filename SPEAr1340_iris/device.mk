@@ -69,7 +69,7 @@ PRODUCT_COPY_FILES += \
 
 #SPEAr_battery script
 PRODUCT_COPY_FILES += \
-	device/stm/SPEAr1340_iris/spear/spear_test_battery.ko:system/lib/modules/spear_test_battery.ko
+	device/stm/SPEAr1340_iris/spear/spear_battery.ko:system/lib/modules/spear_battery.ko
 
 # Install Platform files (boot animation and boot splash image)
 PRODUCT_COPY_FILES += \
