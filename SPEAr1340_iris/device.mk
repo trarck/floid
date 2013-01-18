@@ -66,11 +66,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	device/stm/SPEAr1340_iris/spear/insmod_spear.sh:system/etc/insmod_spear.sh
 
-
-#SPEAr_battery script
-PRODUCT_COPY_FILES += \
-	device/stm/SPEAr1340_iris/spear/spear_battery.ko:system/lib/modules/spear_battery.ko
-
 # Install Platform files (boot animation and boot splash image)
 PRODUCT_COPY_FILES += \
 	device/stm/SPEAr1340/local/bootanimation.zip:data/local/bootanimation.zip
@@ -121,7 +116,8 @@ PRODUCT_PACKAGES += \
 	SoundRecorder \
 	SpeechRecorder \
 	Camera \
-	camera.iris
+	camera.iris \
+	spear_battery.ko
 
 ifeq ($(WIFI_MODULE_TYPE),8188EUS)
 PRODUCT_PACKAGES += \
