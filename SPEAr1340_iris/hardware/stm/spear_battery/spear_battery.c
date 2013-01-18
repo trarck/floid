@@ -46,6 +46,10 @@ static int spear_battery_get_property(struct power_supply *psy,
 					enum power_supply_property psp,
 					union power_supply_propval *val);
 
+static int spear_battery_ac_get_property(struct power_supply *psy,
+					enum power_supply_property psp,
+					union power_supply_propval *val);
+
 static enum power_supply_property spear_battery_battery_props[] = {
 	POWER_SUPPLY_PROP_STATUS,
 	POWER_SUPPLY_PROP_HEALTH,
@@ -54,6 +58,18 @@ static enum power_supply_property spear_battery_battery_props[] = {
 	POWER_SUPPLY_PROP_VOLTAGE_NOW,
 	POWER_SUPPLY_PROP_TEMP,
 	POWER_SUPPLY_PROP_CAPACITY,
+};
+
+static enum power_supply_property spear_battery_ac_props[] = {
+	POWER_SUPPLY_PROP_ONLINE,
+};
+
+static struct power_supply spear_battery_ac = {
+	.name = "ac",
+	.type = POWER_SUPPLY_TYPE_MAINS,
+	.properties 	=  spear_battery_ac_props,
+	.num_properties = ARRAY_SIZE(spear_battery_ac_props),
+	.get_property	= spear_battery_ac_get_property,
 };
 
 static struct power_supply spear_battery_bat = {
@@ -107,8 +123,6 @@ static int spear_charger_status(void)
 
 	st1 = gpio_get_value_cansleep(battery_pdata->st1);
 	st2 = gpio_get_value_cansleep(battery_pdata->st2);
-
-	printk("Battery debug: st1 = %d, st2 = %d\n", st1, st2);
 
 	if (st1 == 0 && st2 == 1) { /* st1: on, st2: off, charge in progress */
 		return POWER_SUPPLY_STATUS_CHARGING;
@@ -235,6 +249,26 @@ static int spear_battery_get_property(struct power_supply *psy,
 	return ret;
 }
 
+static int spear_battery_ac_get_property(struct power_supply *psy,
+					enum power_supply_property psp,
+					union power_supply_propval *val)
+{
+	int ret = 0;
+
+	switch (psp) {
+		case POWER_SUPPLY_PROP_ONLINE:
+			if (spear_charger_status() == POWER_SUPPLY_STATUS_DISCHARGING)
+				val->intval = 0;
+			else
+				val->intval = 1;
+			break;
+		default:
+			ret = -EINVAL;
+			break;
+	}
+	return ret;
+}
+
 /**
  * In android, need the driver notify the application to update power level display.
  */
@@ -289,6 +323,8 @@ static int __init spear_battery_init(void)
 	spear_battery_gpio_init(battery_pdev, battery_pdata->st2);
 	old_dc_status = spear_charger_status();
 
+	power_supply_register(&battery_pdev->dev, &spear_battery_ac);
+
 	/** power supply register */
 	power_supply_register(&battery_pdev->dev, &spear_battery_bat);
 
@@ -308,6 +344,7 @@ static void __exit spear_battery_exit(void)
 	gpio_free(battery_pdata->st1);
 	gpio_free(battery_pdata->st2);
 	power_supply_unregister(&spear_battery_bat);
+	power_supply_unregister(&spear_battery_ac);
 	platform_device_unregister(battery_pdev);
 
 	printk(KERN_INFO "spear_battery: unloaded.\n");
