@@ -14,11 +14,15 @@
  *
  */
 
+#include <linux/device.h>
+#include <linux/io.h>
+#include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/err.h>
 #include <linux/platform_device.h>
 #include <linux/power_supply.h>
 #include <linux/interrupt.h>
+#include <linux/delay.h>
 #include <linux/spear_adc.h>
 
 struct spear_battery_pdata_t {
@@ -32,7 +36,7 @@ struct spear_battery_pdata_t {
 static struct spear_battery_pdata_t spear_battery_pdata = {
 	.adc_current	= ADC_CHANNEL0,
 	.adc_volt	= ADC_CHANNEL1,
-	.delay		= 30 * HZ, /* sec */
+	.delay		= 60 * HZ, /* sec */
 	.st1		= GPIO0_7,
 	.st2		= PLGPIO_32,
 };
@@ -40,7 +44,15 @@ static struct spear_battery_pdata_t spear_battery_pdata = {
 static struct platform_device *battery_pdev;
 static struct spear_battery_pdata_t *battery_pdata = &spear_battery_pdata;
 static struct delayed_work battery_dwork;
-static int old_dc_status = 0;
+
+static int old_state;
+static int vmax = 1200; // 4000 - vmin
+static int vmin = 2800;
+static int cmax = 1900; // 2000 - cmin
+static int cmin = 100;
+static int lmax = 100;
+static int lold= 0;
+static int div = 90; /* CC to CV charging percent divider */
 
 static int spear_battery_get_property(struct power_supply *psy,
 					enum power_supply_property psp,
@@ -133,19 +145,36 @@ static int spear_charger_status(void)
 	}
 }
 
-static int spear_battery_calc_level(int value, int v_max, int v_min, int l_max, int l_min)
+/* remember changing state */
+static int spear_charger_changing(int state, int adc_volt)
 {
-	int level;
+	static int delay = -1;
 
-	dev_info(&battery_pdev->dev, "value=%d, v_max=%d, v_min=%d, l_max=%d, l_min=%d\n",
-					value, v_max, v_min, l_max, l_min);
-	value = value > v_max ? v_max : value;
-	value = value < v_min ? v_min : value;
-	level = (value - v_min) * 100 / (v_max - v_min);
-	level = (l_max - l_min) * level / 100 + l_min;
-	dev_info(&battery_pdev->dev, "level=%d\n", level);
+	if (old_state != state) { /* dc status changed */
+		old_state = state;
+		delay = 1; /* do not read adc immediately */
+	}
 
-	return level;
+	if (delay > 0) {
+		delay--;
+		return 0; /* return old_level */
+	} else if (delay == 0) {
+		delay = -1; /* read once */
+		if (state == POWER_SUPPLY_STATUS_DISCHARGING) {
+			/* dc to bat */
+			vmax = adc_volt;
+			lmax = lold;
+		} else {
+			/* bat to dc */
+			if (lold < div)
+				vmax = adc_volt * div / lold;
+			else 
+				vmax =  1200;
+		}
+		dev_info(&battery_pdev->dev, "\nstate change: vmax=%d, lmax=%d, lold=%d\n", vmax, lmax, lold);
+	}
+
+	return 1; /* normal */
 }
 
 /**
@@ -153,64 +182,53 @@ static int spear_battery_calc_level(int value, int v_max, int v_min, int l_max, 
  */
 static uint spear_battery_get_capacity(void)
 {
-	int adc_volt, adc_curr;
 	int level;
-	int dc_status;
-	static int max_volt = 3980;
-	static int min_volt = 2500;
-	static int base_level = 100;
-	static int old_level= 100;
-	static int div = 90;
-	static int base_curr = 2000;
-	static int delay = -1;
+	int adc_volt, adc_curr;
+	int state;
 
 	/* get adc value */
 	adc_volt = spear_battery_adc_value(battery_pdata->adc_volt) * 2;
 	adc_curr = spear_battery_adc_value(battery_pdata->adc_current);
-	dev_info(&battery_pdev->dev, "adc_volt=%d, adc_curr=%d\n", adc_volt, adc_curr);
+	adc_volt -= vmin; adc_volt = adc_volt > 0 ? adc_volt : 0 ;
+	adc_curr -= cmin; adc_curr = adc_curr > 0 ? adc_curr : 0 ;
+	dev_info(&battery_pdev->dev, "volt=%d, curr=%d", adc_volt, adc_curr);
 
-	dc_status = spear_charger_status();
-	if (old_dc_status != dc_status) { /* dc status changed */
-		dev_info(&battery_pdev->dev, "status changing\n");
-		old_dc_status = dc_status;
-		delay = 1; /* do not read adc immediately */
-	}
-	if (delay > 0) {
-		delay--;
-		return old_level;
-	} else if (delay == 0) {
-		delay = -1; /* read once */
-		base_level = old_level;
-		max_volt = adc_volt;
-		dev_info(&battery_pdev->dev, "max_volt=%d, base_level=%d\n", max_volt, base_level);
-	}
+	state = spear_charger_status();
+	if (spear_charger_changing(state, adc_volt) == 0)
+		return lold;
 
-	if (dc_status == POWER_SUPPLY_STATUS_DISCHARGING) {
+	if (state == POWER_SUPPLY_STATUS_DISCHARGING) {
 		/* battery */
-		max_volt = adc_volt > max_volt ? adc_volt : max_volt;
-		level = spear_battery_calc_level(adc_volt, max_volt, min_volt, base_level, 0);
+		vmax = adc_volt > vmax ? adc_volt : vmax;
+		level = adc_volt * lmax / vmax;
+
+		/* level should not increase in bat mode */
+		level = level > lold ? lold : level ;
 	} else {
 		/* dc */
-		if (adc_volt < max_volt && base_level < div) {
-			/* constant current charging stage, volt is increasing */
-			/* base_level - div % */
-			level = spear_battery_calc_level(adc_volt, max_volt, min_volt, div, base_level);
+		/* full */
+		if (adc_curr < 100) {
+			level = 100;
+			vmax = adc_volt;
 		} else {
-			/* constant voltage charging stage, curr is decreasing */
-			/* base - 100 % */
-			if (adc_curr < 100) {
-				level = 100;
-				max_volt = adc_volt;
-			} else {
-				adc_curr = adc_curr > base_curr ? 0 : base_curr - adc_curr;
-				level = spear_battery_calc_level(adc_curr, base_curr, 100, 100, base_level);
+			/* calc volt first */
+			if (adc_volt <= vmax ) {
+				level = adc_volt * div / vmax;
 			}
-		}
 
-		level = level < old_level ? old_level : level ;
+			/* calc curr if current start to decrease */
+			if (adc_curr <= cmax) {
+				adc_curr = adc_curr > cmax ? 0 : cmax - adc_curr;
+				level = adc_curr * (100-div) / cmax + div;
+			}
+
+			/* level should not decrease in dc mode */
+			level = level < lold ? lold : level ;
+		}
 	}
 
-	old_level = level;
+	lold = level;
+	dev_info(&battery_pdev->dev, "level=%d%%\n", level);
 	return level;
 }
 
@@ -280,8 +298,11 @@ static void spear_battery_work(struct work_struct *work)
 
 /**
  * adc config
+ * cmd:
+ * 0 - get channel
+ * 1 - put channel
  */
-static int spear_battery_adc_config(struct platform_device *pdev, int chan_id)
+static int spear_battery_adc_config(struct platform_device *pdev, int chan_id, int cmd)
 {
 	int ret = 0;
 	struct adc_chan_config adc_cfg;
@@ -291,22 +312,97 @@ static int spear_battery_adc_config(struct platform_device *pdev, int chan_id)
 	adc_cfg.scan_rate	= 5000; /* micro second*/
 	adc_cfg.scan_rate_fixed = false;/* dma only available for chan-0 */
 
-	ret = spear_adc_chan_get(pdev, adc_cfg.chan_id);
-	if (ret < 0) {
-		dev_err(&pdev->dev, "Err in ADC channel get for battery ret=%d\n", ret);
-		return ret;
-	}
+	if (cmd == 0) { 
+		ret = spear_adc_chan_get(pdev, adc_cfg.chan_id);
+		if (ret < 0) {
+			dev_err(&pdev->dev,
+					"Err in ADC channel get for battery ret=%d\n", ret);
+			return ret;
+		}
 
-	ret = spear_adc_chan_configure(pdev, &adc_cfg);
-	if (ret < 0) {
-		dev_err(&pdev->dev, "Err in ADC configure for battery ret=%d\n", ret);
-		return ret;
+		ret = spear_adc_chan_configure(pdev, &adc_cfg);
+		if (ret < 0) {
+			dev_err(&pdev->dev,
+					"Err in ADC configure for battery ret=%d\n", ret);
+			return ret;
+		}
+	} else {
+		ret = spear_adc_chan_put(pdev, adc_cfg.chan_id);
+		if (ret < 0) {
+			dev_err(&pdev->dev,
+					"Err in ADC channel put for battery ret=%d\n", ret);
+			return ret;
+		}
 	}
 
 	return ret;
 }
 
-static int __init spear_battery_init(void)
+static void spear_battery_cap_init(void)
+{
+	int adc_volt, adc_curr;
+
+	mdelay(250);
+	old_state = spear_charger_status();
+	adc_volt = spear_battery_adc_value(battery_pdata->adc_volt) * 2;
+	adc_curr = spear_battery_adc_value(battery_pdata->adc_current);
+	adc_volt -= vmin; adc_volt = adc_volt > 0 ? adc_volt : 0 ;
+	vmax = adc_volt > vmax ? adc_volt : vmax ;
+	adc_curr -= cmin; adc_curr = adc_curr > 0 ? adc_curr : 0 ;
+
+	if (old_state == POWER_SUPPLY_STATUS_DISCHARGING) {
+		lmax = adc_volt * 100 / vmax;
+		vmax = adc_volt;
+		lold = lmax;
+	} else {
+		if (adc_curr <=0) {
+			lmax = 100;
+			lold = lmax;
+			vmax = adc_volt;
+		} else {
+			if (adc_volt < vmax) {
+				lold = adc_volt * div / vmax;
+			} else {
+				adc_curr = adc_curr > cmax ? 0 : cmax - adc_curr;
+				lold = adc_curr * (100-div) / cmax + div;
+			}
+		}
+	}
+
+	dev_info(&battery_pdev->dev, "init: volt=%d, curr=%d, lold=%d%%\n", adc_volt, adc_curr, lold);
+
+}
+
+#ifdef CONFIG_PM
+static int spear_battery_suspend(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+
+	spear_battery_adc_config(battery_pdev, battery_pdata->adc_volt, 1);
+	spear_battery_adc_config(battery_pdev, battery_pdata->adc_current, 1);
+
+	dev_info(dev, "Suspended.\n");
+
+	return 0;
+}
+
+static int spear_battery_resume(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+
+	spear_battery_adc_config(battery_pdev, battery_pdata->adc_volt, 0);
+	spear_battery_adc_config(battery_pdev, battery_pdata->adc_current, 0);
+
+	dev_info(dev, "Resumed.\n");
+
+	return 0;
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(spear_battery_pm_ops,
+		spear_battery_suspend, spear_battery_resume);
+
+static int spear_battery_probe(void)
 {
 	int ret = 0;
 
@@ -315,17 +411,18 @@ static int __init spear_battery_init(void)
 		return PTR_ERR(battery_pdev);
 
 	/** adc configure */
-	spear_battery_adc_config(battery_pdev, battery_pdata->adc_volt);
-	spear_battery_adc_config(battery_pdev, battery_pdata->adc_current);
+	spear_battery_adc_config(battery_pdev, battery_pdata->adc_volt, 0);
+	spear_battery_adc_config(battery_pdev, battery_pdata->adc_current, 0);
 
 	/** charger init */
 	spear_battery_gpio_init(battery_pdev, battery_pdata->st1);
 	spear_battery_gpio_init(battery_pdev, battery_pdata->st2);
-	old_dc_status = spear_charger_status();
 
-	power_supply_register(&battery_pdev->dev, &spear_battery_ac);
+	/* capacity init */
+	spear_battery_cap_init();
 
 	/** power supply register */
+	power_supply_register(&battery_pdev->dev, &spear_battery_ac);
 	power_supply_register(&battery_pdev->dev, &spear_battery_bat);
 
 	/** init delay work */
@@ -336,7 +433,7 @@ static int __init spear_battery_init(void)
 	return ret;
 }
 
-static void __exit spear_battery_exit(void)
+static void spear_battery_exit(void)
 {
 	cancel_delayed_work_sync(&battery_dwork);
 	spear_adc_chan_put(battery_pdev, battery_pdata->adc_volt);
@@ -350,9 +447,30 @@ static void __exit spear_battery_exit(void)
 	printk(KERN_INFO "spear_battery: unloaded.\n");
 }
 
+static struct platform_driver spear_battery_driver = {
+	.probe = spear_battery_probe,
+	.remove = spear_battery_exit,
+	.driver = {
+		.name = "spear_battery",
+		.owner = THIS_MODULE,
+#ifdef CONFIG_PM
+		.pm = &spear_battery_pm_ops,
+#endif
+	},
+};
 
+static int __init spear_battery_init(void)
+{
+	return platform_driver_register(&spear_battery_driver);
+}
 module_init(spear_battery_init);
-module_exit(spear_battery_exit);
+
+static void __exit spear_battery_cleanup(void)
+{
+	platform_driver_unregister(&spear_battery_driver);
+}
+module_exit(spear_battery_cleanup);
+
 MODULE_AUTHOR("Vincenzo Frascino <vincenzo.frascino@st.com>");
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Android SPEAr battery driver.");
