@@ -376,8 +376,6 @@ static void spear_battery_cap_init(void)
 #ifdef CONFIG_PM
 static int spear_battery_suspend(struct device *dev)
 {
-	struct platform_device *pdev = to_platform_device(dev);
-
 	spear_battery_adc_config(battery_pdev, battery_pdata->adc_volt, 1);
 	spear_battery_adc_config(battery_pdev, battery_pdata->adc_current, 1);
 
@@ -388,8 +386,6 @@ static int spear_battery_suspend(struct device *dev)
 
 static int spear_battery_resume(struct device *dev)
 {
-	struct platform_device *pdev = to_platform_device(dev);
-
 	spear_battery_adc_config(battery_pdev, battery_pdata->adc_volt, 0);
 	spear_battery_adc_config(battery_pdev, battery_pdata->adc_current, 0);
 
@@ -402,7 +398,7 @@ static int spear_battery_resume(struct device *dev)
 static SIMPLE_DEV_PM_OPS(spear_battery_pm_ops,
 		spear_battery_suspend, spear_battery_resume);
 
-static int spear_battery_probe(void)
+static int spear_battery_probe(struct platform_device *pdev)
 {
 	int ret = 0;
 
@@ -429,11 +425,11 @@ static int spear_battery_probe(void)
 	INIT_DELAYED_WORK(&battery_dwork, spear_battery_work);
 	schedule_delayed_work(&battery_dwork, 0);
 
-	printk(KERN_INFO "spear_battery: loaded.\n");
+	dev_info(&pdev->dev, "Loaded.\n");
 	return ret;
 }
 
-static void spear_battery_exit(void)
+static int spear_battery_exit(struct platform_device *pdev)
 {
 	cancel_delayed_work_sync(&battery_dwork);
 	spear_adc_chan_put(battery_pdev, battery_pdata->adc_volt);
@@ -444,7 +440,8 @@ static void spear_battery_exit(void)
 	power_supply_unregister(&spear_battery_ac);
 	platform_device_unregister(battery_pdev);
 
-	printk(KERN_INFO "spear_battery: unloaded.\n");
+	dev_info(&pdev->dev, "Unloaded.\n");
+	return 0;
 }
 
 static struct platform_driver spear_battery_driver = {
