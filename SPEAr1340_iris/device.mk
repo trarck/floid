@@ -122,14 +122,12 @@ PRODUCT_PACKAGES += \
 ifeq ($(WIFI_MODULE_TYPE),8188EUS)
 PRODUCT_PACKAGES += \
 	8188eu.ko
-endif
-
-ifeq ($(WIFI_MODULE_TYPE),8192CU)
+else
 PRODUCT_PACKAGES += \
 	8192cu.ko
 endif
 
-# HDMI modules
+# HDMI module
 PRODUCT_PACKAGES += \
 	it6612x_mod.ko
 
