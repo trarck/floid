@@ -46,13 +46,17 @@ static struct spear_battery_pdata_t *battery_pdata = &spear_battery_pdata;
 static struct delayed_work battery_dwork;
 
 static int old_state;
-static int vmax = 1200; // 4000 - vmin
-static int vmin = 2800;
-static int cmax = 1900; // 2000 - cmin
+static int vmax = 1300; // 4200 - vmin
+static int vmin = 2900;
+static int cmax = 2900; // 3000 - cmin
 static int cmin = 100;
 static int lmax = 100;
 static int lold= 0;
 static int div = 90; /* CC to CV charging percent divider */
+/*
+ * Value of internal battery impedende experimentally determined.
+ */
+static int impedence = 200;
 
 static int spear_battery_get_property(struct power_supply *psy,
 					enum power_supply_property psp,
@@ -92,6 +96,14 @@ static struct power_supply spear_battery_bat = {
 	.get_property	= spear_battery_get_property,
 	.use_for_apm 	= 1,
 };
+
+/*
+ * Calculate the real voltage with impedence correction.
+ */
+static int calc_real_volt(int volt_val, int cur_val, int impedance)
+{
+	return volt_val + cur_val * impedance / 1000;
+}
 
 /**
  * init status pin of charger chip
@@ -192,6 +204,8 @@ static uint spear_battery_get_capacity(void)
 	adc_volt -= vmin; adc_volt = adc_volt > 0 ? adc_volt : 0 ;
 	adc_curr -= cmin; adc_curr = adc_curr > 0 ? adc_curr : 0 ;
 	dev_info(&battery_pdev->dev, "volt=%d, curr=%d", adc_volt, adc_curr);
+	/* adc_volt correction */
+	adc_volt = calc_real_volt(adc_volt, adc_curr, impedence);
 
 	state = spear_charger_status();
 	if (spear_charger_changing(state, adc_volt) == 0)
@@ -212,14 +226,14 @@ static uint spear_battery_get_capacity(void)
 			vmax = adc_volt;
 		} else {
 			/* calc volt first */
-			if (adc_volt <= vmax ) {
+			if (adc_volt <= vmax) {
 				level = adc_volt * div / vmax;
 			}
 
 			/* calc curr if current start to decrease */
 			if (adc_curr <= cmax) {
-				adc_curr = adc_curr > cmax ? 0 : cmax - adc_curr;
-				level = adc_curr * (100-div) / cmax + div;
+				adc_curr = adc_curr > cmax ? 0 : (cmax - adc_curr);
+				level = adc_curr * (100 - div) / cmax + div;
 			}
 
 			/* level should not decrease in dc mode */
@@ -349,6 +363,7 @@ static void spear_battery_cap_init(void)
 	adc_volt -= vmin; adc_volt = adc_volt > 0 ? adc_volt : 0 ;
 	vmax = adc_volt > vmax ? adc_volt : vmax ;
 	adc_curr -= cmin; adc_curr = adc_curr > 0 ? adc_curr : 0 ;
+	adc_volt = calc_real_volt(adc_volt, adc_curr, impedence);
 
 	if (old_state == POWER_SUPPLY_STATUS_DISCHARGING) {
 		lmax = adc_volt * 100 / vmax;
